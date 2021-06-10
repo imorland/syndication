@@ -123,7 +123,6 @@ abstract class AbstractFeedController implements RequestHandlerInterface
 
         $feed_content = array_merge($this->getFeedContent($request), [
             'self_link'  => rtrim($request->getUri(), " \t\n\r\0\v/"),
-            'translator' => $this->translator,
             'html'       => $this->getSetting('html', true),
         ]);
 
