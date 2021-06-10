@@ -66,7 +66,7 @@ class AddClientLinks
     public function __invoke(Document $view, ServerRequestInterface $request)
     {
         $this->addAtomFeed($view, 'atom', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_activity'));
-        $this->addAtomFeed($view, 'atom/d', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_new_discussions'));
+        $this->addAtomFeed($view, 'atom/discussions', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_new_discussions'));
 
         $path = $request->getUri()->getPath();
         $route = $request->getAttribute('routeName');
@@ -77,7 +77,7 @@ class AddClientLinks
             $tag_name = str_replace('/t/', '', $path);
 
             $this->addAtomFeed($view, 'atom'.$path, $this->translator->trans('ianm-syndication.forum.autodiscovery.tag_activity', ['{tag}' => $tag_name]));
-            $this->addAtomFeed($view, 'atom'.$path.'/d', $this->translator->trans('ianm-syndication.forum.autodiscovery.tag_new_discussions', ['{tag}' => $tag_name]));
+            $this->addAtomFeed($view, 'atom'.$path.'/discussions', $this->translator->trans('ianm-syndication.forum.autodiscovery.tag_new_discussions', ['{tag}' => $tag_name]));
         } elseif ($route === 'discussion') {
             // Removes the post number (if any). Reverse routing would be better.
             $path_parts = explode('/', $path);
