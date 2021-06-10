@@ -19,7 +19,8 @@
         },
         {
             "name": "IanM",
-            "role": "Developer"
+            "role": "Developer",
+            "homepage": "https://discuss.flarum.org/u/ianm"
         }
     ],
     "require": {
@@ -46,7 +47,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AmauryCarrade\\FlarumFeeds\\": "src/"
+            "IanM\\FlarumFeeds\\": "src/"
         }
     }
 }

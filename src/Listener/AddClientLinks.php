@@ -37,7 +37,7 @@
  *
  */
 
-namespace AmauryCarrade\FlarumFeeds\Listener;
+namespace IanM\FlarumFeeds\Listener;
 
 use Flarum\Foundation\Config;
 use Flarum\Frontend\Document;
@@ -65,8 +65,8 @@ class AddClientLinks
 
     public function __invoke(Document $view, ServerRequestInterface $request)
     {
-        $this->addAtomFeed($view, 'atom', $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.forum_activity'));
-        $this->addAtomFeed($view, 'atom/d', $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.forum_new_discussions'));
+        $this->addAtomFeed($view, 'atom', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_activity'));
+        $this->addAtomFeed($view, 'atom/d', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_new_discussions'));
 
         $path = $request->getUri()->getPath();
         $route = $request->getAttribute('routeName');
@@ -76,18 +76,18 @@ class AddClientLinks
             // TODO use real tag name
             $tag_name = str_replace('/t/', '', $path);
 
-            $this->addAtomFeed($view, 'atom'.$path, $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_activity', ['{tag}' => $tag_name]));
-            $this->addAtomFeed($view, 'atom'.$path.'/d', $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_new_discussions', ['{tag}' => $tag_name]));
+            $this->addAtomFeed($view, 'atom'.$path, $this->translator->trans('ianm-syndication.forum.autodiscovery.tag_activity', ['{tag}' => $tag_name]));
+            $this->addAtomFeed($view, 'atom'.$path.'/d', $this->translator->trans('ianm-syndication.forum.autodiscovery.tag_new_discussions', ['{tag}' => $tag_name]));
         } elseif ($route === 'discussion') {
             // Removes the post number (if any). Reverse routing would be better.
             $path_parts = explode('/', $path);
 
             // TODO add discussion name?
-            $this->addAtomFeed($view, 'atom/d/'.$path_parts[2], $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.discussion_last_posts'));
+            $this->addAtomFeed($view, 'atom/d/'.$path_parts[2], $this->translator->trans('ianm-syndication.forum.autodiscovery.discussion_last_posts'));
         }
     }
 
-    private function addAtomFeed(Document $view, $url, $title)
+    private function addAtomFeed(Document $view, $url, $title): void
     {
         $view->head[] = '<link rel="alternate" type="application/atom+xml" title="'.$title.'" href="'.$this->config->url().'/'.$url.'" />';
     }

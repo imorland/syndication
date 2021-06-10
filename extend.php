@@ -37,8 +37,10 @@
  *
  */
 
-use AmauryCarrade\FlarumFeeds\Controller;
-use AmauryCarrade\FlarumFeeds\Listener;
+namespace IanM\FlarumFeeds;
+
+use IanM\FlarumFeeds\Controller;
+use IanM\FlarumFeeds\Listener;
 use Flarum\Extend;
 
 return [

@@ -37,7 +37,7 @@
  *
  */
 
-namespace AmauryCarrade\FlarumFeeds\Controller;
+namespace IanM\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
 use Flarum\Settings\SettingsRepositoryInterface;

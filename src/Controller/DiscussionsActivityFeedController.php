@@ -37,7 +37,7 @@
  *
  */
 
-namespace AmauryCarrade\FlarumFeeds\Controller;
+namespace IanM\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -153,19 +153,19 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         // TODO real tag names
         if ($this->lastTopics) {
             if (empty($tags)) {
-                $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_d_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
-                $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_d_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
+                $title = $this->translator->trans('ianm-syndication.forum.feeds.titles.main_d_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
+                $description = $this->translator->trans('ianm-syndication.forum.feeds.titles.main_d_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
             } else {
-                $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_d_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
-                $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_d_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
+                $title = $this->translator->trans('ianm-syndication.forum.feeds.titles.tag_d_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
+                $description = $this->translator->trans('ianm-syndication.forum.feeds.titles.tag_d_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
             }
         } else {
             if (empty($tags)) {
-                $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
-                $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
+                $title = $this->translator->trans('ianm-syndication.forum.feeds.titles.main_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
+                $description = $this->translator->trans('ianm-syndication.forum.feeds.titles.main_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
             } else {
-                $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
-                $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
+                $title = $this->translator->trans('ianm-syndication.forum.feeds.titles.tag_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
+                $description = $this->translator->trans('ianm-syndication.forum.feeds.titles.tag_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
             }
         }
 

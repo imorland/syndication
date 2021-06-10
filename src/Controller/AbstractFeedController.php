@@ -37,7 +37,7 @@
  *
  */
 
-namespace AmauryCarrade\FlarumFeeds\Controller;
+namespace IanM\FlarumFeeds\Controller;
 
 use DateTime;
 use Flarum\Api\Client as ApiClient;
@@ -153,7 +153,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected function getSetting($key, $default = null)
     {
-        return $this->settings->get('amaurycarrade-syndication.plugin.'.$key, $default);
+        return $this->settings->get('ianm-syndication.plugin.'.$key, $default);
     }
 
     /**
@@ -161,7 +161,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      *
      * @return User The actor for this request.
      */
-    protected function getActor(ServerRequestInterface $request)
+    protected function getActor(ServerRequestInterface $request): User
     {
         return RequestUtil::getActor($request);
     }

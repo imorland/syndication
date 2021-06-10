@@ -37,7 +37,7 @@
  *
  */
 
-namespace AmauryCarrade\FlarumFeeds\Controller;
+namespace IanM\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
 use Flarum\Http\Exception\RouteNotFoundException;
@@ -112,8 +112,8 @@ class DiscussionFeedController extends AbstractFeedController
         }
 
         return [
-            'title'        => $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.discussion_title', ['{discussion_name}' => $discussion->attributes->title]),
-            'description'  => $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.discussion_subtitle', ['{discussion_name}' => $discussion->attributes->title]),
+            'title'        => $this->translator->trans('ianm-syndication.forum.feeds.titles.discussion_title', ['{discussion_name}' => $discussion->attributes->title]),
+            'description'  => $this->translator->trans('ianm-syndication.forum.feeds.titles.discussion_subtitle', ['{discussion_name}' => $discussion->attributes->title]),
             'link'         => $this->url->to('forum')->route('discussion', ['id' => $discussion->id.'-'.$discussion->attributes->slug]),
             'pubDate'      => new \DateTime(),
             'lastModified' => $lastModified,
