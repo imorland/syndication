@@ -39,8 +39,6 @@
 
 namespace IanM\FlarumFeeds;
 
-use IanM\FlarumFeeds\Controller;
-use IanM\FlarumFeeds\Listener;
 use Flarum\Extend;
 
 return [
