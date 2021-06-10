@@ -66,7 +66,7 @@ class AddClientLinks
     public function __invoke(Document $view, ServerRequestInterface $request)
     {
         $this->addAtomFeed($view, 'atom', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_activity'));
-        $this->addAtomFeed($view, 'atom/d', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_new_discussions'));
+        $this->addAtomFeed($view, 'atom/discussions', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_new_discussions'));
 
         $path = $request->getUri()->getPath();
         $route = $request->getAttribute('routeName');
