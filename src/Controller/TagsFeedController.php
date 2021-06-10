@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright or © or Copr. flarum-ext-syndication contributor : Amaury
  * Carrade (2016)
  *
@@ -33,25 +34,23 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
+ *
  */
 
 namespace AmauryCarrade\FlarumFeeds\Controller;
 
+use Flarum\Api\Client as ApiClient;
 use Flarum\Extension\ExtensionManager;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Tags\TagRepository;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Flarum\Api\Client as ApiClient;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Arr;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
 
 /**
  * Displays a feed containing the last discussions with activity in a given tag.
- *
- * @package AmauryCarrade\FlarumFeeds\Controller
  */
 class TagsFeedController extends DiscussionsActivityFeedController
 {
@@ -66,8 +65,9 @@ class TagsFeedController extends DiscussionsActivityFeedController
 
         $this->tagRepository = $tagRepository;
 
-        if (!$extensions->isEnabled("flarum-tags"))
-            throw new RouteNotFoundException("Tag feeds not available without the tag extension.");
+        if (!$extensions->isEnabled('flarum-tags')) {
+            throw new RouteNotFoundException('Tag feeds not available without the tag extension.');
+        }
     }
 
     protected function getTags(Request $request)
@@ -75,9 +75,8 @@ class TagsFeedController extends DiscussionsActivityFeedController
         $queryParams = $request->getQueryParams();
         $tag_slug = Arr::get($queryParams, 'tag');
 
-        if (!$this->tagRepository->getIdForSlug($tag_slug))
-        {
-            throw new RouteNotFoundException("This tag does not exist.");
+        if (!$this->tagRepository->getIdForSlug($tag_slug)) {
+            throw new RouteNotFoundException('This tag does not exist.');
         }
 
         return [$tag_slug];

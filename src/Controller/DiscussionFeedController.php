@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright or © or Copr. flarum-ext-syndication contributor : Amaury
  * Carrade (2016)
  *
@@ -33,24 +34,22 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
+ *
  */
 
 namespace AmauryCarrade\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
+use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
-use Flarum\Http\Exception\RouteNotFoundException;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Arr;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Displays feed for a given topic.
- *
- * @package AmauryCarrade\FlarumFeeds\Controller
  */
 class DiscussionFeedController extends AbstractFeedController
 {
@@ -72,43 +71,42 @@ class DiscussionFeedController extends AbstractFeedController
         $actor = $this->getActor($request);
 
         $discussion = $this->getDiscussionsDocument($actor, [
-            'id' => $discussion_id,
+            'id'   => $discussion_id,
             'page' => [
-                'limit' => 1
-            ]
+                'limit' => 1,
+            ],
         ])->data;
 
         $posts = $this->getPostsDocument($actor, [
             'filter' => [
-                'discussion' => $discussion_id
+                'discussion' => $discussion_id,
             ],
             'page' => [
                 'offset' => 0,
-                'limit' => $this->getSetting("entries-count", 100)
+                'limit'  => $this->getSetting('entries-count', 100),
             ],
-            'sort' => '-createdAt'
+            'sort' => '-createdAt',
         ]);
 
         $entries = [];
         $lastModified = null;
 
-        foreach ($posts->data as $post)
-        {
-            if ($post->attributes->contentType != 'comment')
+        foreach ($posts->data as $post) {
+            if ($post->attributes->contentType != 'comment') {
                 continue;
+            }
 
             $entries[] = [
                 'title'       => $discussion->attributes->title,
                 'content'     => $this->summarize($this->stripHTML($post->attributes->contentHtml)),
                 'permalink'   => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug, 'near' => $post->attributes->number]),
                 'pubdate'     => $this->parseDate($post->attributes->createdAt),
-                'author'      => $this->getRelationship($posts, $post->relationships->user)->username
+                'author'      => $this->getRelationship($posts, $post->relationships->user)->username,
             ];
 
             $modified = $this->parseDate(Arr::get($post->attributes, 'editedAt', $post->attributes->createdAt));
 
-            if ($lastModified === null || $lastModified < $modified)
-            {
+            if ($lastModified === null || $lastModified < $modified) {
                 $lastModified = $modified;
             }
         }
@@ -116,33 +114,37 @@ class DiscussionFeedController extends AbstractFeedController
         return [
             'title'        => $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.discussion_title', ['{discussion_name}' => $discussion->attributes->title]),
             'description'  => $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.discussion_subtitle', ['{discussion_name}' => $discussion->attributes->title]),
-            'link'         => $this->url->to('forum')->route('discussion', ['id' => $discussion->id . '-' . $discussion->attributes->slug]),
+            'link'         => $this->url->to('forum')->route('discussion', ['id' => $discussion->id.'-'.$discussion->attributes->slug]),
             'pubDate'      => new \DateTime(),
             'lastModified' => $lastModified,
-            'entries'      => $entries
+            'entries'      => $entries,
         ];
     }
 
     /**
      * Get the result of an API request to show a discussion.
      *
-     * @param User $actor
+     * @param User  $actor
      * @param array $params
-     * @return object
+     *
      * @throws RouteNotFoundException
+     *
+     * @return object
      */
     protected function getDiscussionsDocument(User $actor, array $params)
     {
-        return $this->getAPIDocument('/discussions/' . $params['id'], $actor, $params);
+        return $this->getAPIDocument('/discussions/'.$params['id'], $actor, $params);
     }
 
     /**
      * Get the result of an API request to list a discussion posts.
      *
-     * @param User $actor
+     * @param User  $actor
      * @param array $params
-     * @return object
+     *
      * @throws RouteNotFoundException
+     *
+     * @return object
      */
     protected function getPostsDocument(User $actor, array $params)
     {

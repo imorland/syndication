@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright or © or Copr. flarum-ext-syndication contributor : Amaury
  * Carrade (2016)
  *
@@ -33,33 +34,29 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
+ *
  */
 
 namespace AmauryCarrade\FlarumFeeds\Controller;
 
 use DateTime;
-use Exception;
-use Flarum\Http\Exception\RouteNotFoundException;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Flarum\User\User;
-use Flarum\Http\UrlGenerator;
 use Flarum\Api\Client as ApiClient;
+use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\RequestUtil;
+use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Illuminate\View\Factory;
-use Illuminate\Support\Arr;
+use Flarum\User\User;
 use Illuminate\Support\Str;
+use Illuminate\View\Factory;
+use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Laminas\Diactoros\Response;
-
 
 /**
- * Abstract feed displayer
- *
- * @package AmauryCarrade\FlarumFeeds\Controller
+ * Abstract feed displayer.
  */
 abstract class AbstractFeedController implements RequestHandlerInterface
 {
@@ -88,21 +85,20 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected $settings;
 
-
     /**
-     * Content-Types for feeds
+     * Content-Types for feeds.
+     *
      * @var array
      */
     protected $content_types = [
-        'rss' => 'application/rss+xml',
-        'atom' => 'application/atom+xml'
+        'rss'  => 'application/rss+xml',
+        'atom' => 'application/atom+xml',
     ];
 
-
     /**
-     * @param Factory $view
-     * @param ApiClient $api
-     * @param TranslatorInterface $translator
+     * @param Factory                     $view
+     * @param ApiClient                   $api
+     * @param TranslatorInterface         $translator
      * @param SettingsRepositoryInterface $settings
      */
     public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings)
@@ -117,6 +113,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
 
     /**
      * @param ServerRequestInterface $request
+     *
      * @return ResponseInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -125,42 +122,43 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         $feed_type = in_array($feed_type, ['rss', 'atom']) ? $feed_type : 'rss';
 
         $feed_content = array_merge($this->getFeedContent($request), [
-            'self_link' => rtrim($request->getUri(), " \t\n\r\0\v/") . "/",
+            'self_link'  => rtrim($request->getUri(), " \t\n\r\0\v/").'/',
             'translator' => $this->translator,
-            'html' => $this->getSetting("html", true),
+            'html'       => $this->getSetting('html', true),
         ]);
 
         $response = new Response();
-        $response->getBody()->write($this->view->make('flarum-feeds::' . $feed_type, $feed_content)->render());
+        $response->getBody()->write($this->view->make('flarum-feeds::'.$feed_type, $feed_content)->render());
 
         /**
          * @var DateTime $lastModified
          */
         $lastModified = $feed_content['lastModified'];
 
-        if ($lastModified != null)
-        {
-            $lastModified->setTimezone(new \DateTimeZone("UTC"));
-            $response = $response->withHeader("Last-Modified", $lastModified->format('D, d M Y H:i:s \G\M\T'));
+        if ($lastModified != null) {
+            $lastModified->setTimezone(new \DateTimeZone('UTC'));
+            $response = $response->withHeader('Last-Modified', $lastModified->format('D, d M Y H:i:s \G\M\T'));
         }
 
-        return $response->withHeader('Content-Type', $this->content_types[$feed_type] . '; charset=utf8');
+        return $response->withHeader('Content-Type', $this->content_types[$feed_type].'; charset=utf8');
     }
 
     /**
      * Returns a setting for this extension.
      *
-     * @param string $key The key.
-     * @param mixed $default The default value (optional).
+     * @param string $key     The key.
+     * @param mixed  $default The default value (optional).
+     *
      * @return mixed The setting's value.
      */
     protected function getSetting($key, $default = null)
     {
-        return $this->settings->get("amaurycarrade-syndication.plugin." . $key, $default);
+        return $this->settings->get('amaurycarrade-syndication.plugin.'.$key, $default);
     }
 
     /**
      * @param ServerRequestInterface $request A request.
+     *
      * @return User The actor for this request.
      */
     protected function getActor(ServerRequestInterface $request)
@@ -172,12 +170,13 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * Retrieves an API response from the given endpoint.
      *
      * @param string $endpoint The API endpoint.
-     * @param User $actor The request actor.
-     * @param array $params The API request parameters (if any).
-     * @param array $body The API request body (if any).
+     * @param User   $actor    The request actor.
+     * @param array  $params   The API request parameters (if any).
+     * @param array  $body     The API request body (if any).
+     *
+     * @throws RouteNotFoundException If the API endpoint cannot be found, or if it cannot find what requested.
      *
      * @return \stdClass API response.
-     * @throws RouteNotFoundException If the API endpoint cannot be found, or if it cannot find what requested.
      */
     protected function getAPIDocument(string $endpoint, User $actor, array $params = [], array $body = [])
     {
@@ -185,7 +184,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         //$response = $this->api->send($endpoint, $actor, $params, $body);
 
         if ($response->getStatusCode() === 404) {
-            throw new RouteNotFoundException;
+            throw new RouteNotFoundException();
         }
 
         return json_decode($response->getBody());
@@ -195,6 +194,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * Get the result of an API request to show the forum.
      *
      * @param User $actor
+     *
      * @return \stdClass
      */
     protected function getForumDocument(User $actor)
@@ -205,18 +205,22 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     /**
      * Gets a related object in an API document.
      *
-     * @param \stdClass $document A document.
+     * @param \stdClass $document     A document.
      * @param \stdClass $relationship A relationship object in the document.
      *
      * @return \stdClass The related object from the document.
      */
     protected function getRelationship(\stdClass $document, \stdClass $relationship)
     {
-        if (!isset($document->included)) return null;
+        if (!isset($document->included)) {
+            return null;
+        }
 
-        foreach ($document->included as $included)
-            if ($included->type == $relationship->data->type && $included->id == $relationship->data->id)
+        foreach ($document->included as $included) {
+            if ($included->type == $relationship->data->type && $included->id == $relationship->data->id) {
                 return $included->attributes;
+            }
+        }
 
         return null;
     }
@@ -225,13 +229,13 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * Summarizes the given content, if enabled in the extension' settings.
      *
      * @param string $content The content.
-     * @param integer $length The maximal length of the content.
+     * @param int    $length  The maximal length of the content.
      *
      * @return string The content, summarized if needed.
      */
     protected function summarize($content, $length = 400)
     {
-        if ($this->getSetting("full-text", true)) {
+        if ($this->getSetting('full-text', true)) {
             return $content;
         } else {
             return $this->truncate($content, $length, ['exact' => false, 'html' => true]);
@@ -242,17 +246,19 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * Removes the HTML from the given content, if enabled in the extension' settings.
      *
      * @param string $content The content.
+     *
      * @return string The content, without HTML if needed.
      */
     protected function stripHTML($content)
     {
-        return $this->getSetting("html", true) ? $content : strip_tags($content);
+        return $this->getSetting('html', true) ? $content : strip_tags($content);
     }
 
     /**
      * Parses a date in an API response.
      *
      * @param string $date A date
+     *
      * @return DateTime A DateTime representation.
      */
     protected function parseDate($date)
@@ -272,18 +278,19 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * - `exact` If false, $text will not be cut mid-word
      * - `html` If true, HTML tags would be handled correctly
      *
-     * @param string $text String to truncate.
-     * @param integer $length Length of returned string, including ellipsis.
-     * @param array $options An array of html attributes and options.
+     * @param string $text    String to truncate.
+     * @param int    $length  Length of returned string, including ellipsis.
+     * @param array  $options An array of html attributes and options.
+     *
      * @return string Trimmed string.
-     * @access public
+     *
      * @link http://book.cakephp.org/view/1469/Text#truncate-1625
      */
-    function truncate($text, $length = 100, $options = array())
+    public function truncate($text, $length = 100, $options = [])
     {
-        $default = array(
-            'ending' => '&hellip;', 'exact' => true, 'html' => false
-        );
+        $default = [
+            'ending' => '&hellip;', 'exact' => true, 'html' => false,
+        ];
         $options = array_merge($default, $options);
 
         $ending = $options['ending'];
@@ -295,7 +302,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
                 return $text;
             }
             $totalLength = mb_strlen(strip_tags($ending));
-            $openTags = array();
+            $openTags = [];
             $truncate = '';
 
             preg_match_all('/(<\/?([\w+]+)[^>]*>)?([^<>]*)/', $text, $tags, PREG_SET_ORDER);
@@ -303,7 +310,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
                 if (!preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/s', $tag[2])) {
                     if (preg_match('/<[\w]+[^>]*>/s', $tag[0])) {
                         array_unshift($openTags, $tag[2]);
-                    } else if (preg_match('/<\/([\w]+)[^>]*>/s', $tag[0], $closeTag)) {
+                    } elseif (preg_match('/<\/([\w]+)[^>]*>/s', $tag[0], $closeTag)) {
                         $pos = array_search($closeTag[1], $openTags);
                         if ($pos !== false) {
                             array_splice($openTags, $pos, 1);
@@ -365,7 +372,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
 
         if ($html) {
             foreach ($openTags as $tag) {
-                $truncate .= '</' . $tag . '>';
+                $truncate .= '</'.$tag.'>';
             }
         }
 
@@ -374,17 +381,20 @@ abstract class AbstractFeedController implements RequestHandlerInterface
 
     /**
      * @param ServerRequestInterface $request
+     *
      * @return array
      */
     abstract protected function getFeedContent(ServerRequestInterface $request);
 
     /**
      * @param ServerRequestInterface $request The request
+     *
      * @return string 'rss' or 'atom', defaults to 'rss'.
      */
     protected function getFeedType(ServerRequestInterface $request): string
     {
         $path = strtolower($request->getUri()->getPath());
+
         return Str::startsWith($path, '/atom') ? 'atom' : 'rss';
     }
 }

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright or © or Copr. flarum-ext-syndication contributor : Amaury
  * Carrade (2016)
  *
@@ -33,25 +34,23 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
+ *
  */
 
 namespace AmauryCarrade\FlarumFeeds\Controller;
 
-use Flarum\Settings\SettingsRepositoryInterface;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Flarum\User\User;
 use Flarum\Api\Client as ApiClient;
+use Flarum\Settings\SettingsRepositoryInterface;
+use Flarum\User\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Arr;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
 
 /**
  * Displays feeds for topics, either last updated or created, possibly filtered by tag.
  * This is the main controller for feeds listing discussions; other extends this one with
  * specific parameters.
- *
- * @package AmauryCarrade\FlarumFeeds\Controller
  */
 class DiscussionsActivityFeedController extends AbstractFeedController
 {
@@ -62,9 +61,9 @@ class DiscussionsActivityFeedController extends AbstractFeedController
      */
     private $sortMap = [
         'latest' => '-lastPostedAt',
-        'top' => '-commentCount',
+        'top'    => '-commentCount',
         'newest' => '-createdAt',
-        'oldest' => 'createdAt'
+        'oldest' => 'createdAt',
     ];
 
     /**
@@ -98,19 +97,20 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         $q = Arr::pull($queryParams, 'q');
         $tags = $this->getTags($request);
 
-        if ($tags != null)
-        {
+        if ($tags != null) {
             $tags_search = [];
-            foreach ($tags as $tag) $tags_search[] = 'tag:' . $tag;
+            foreach ($tags as $tag) {
+                $tags_search[] = 'tag:'.$tag;
+            }
 
-            $q .= (!empty($q) ? ' ' : '') . implode(' ', $tags_search);
+            $q .= (!empty($q) ? ' ' : '').implode(' ', $tags_search);
         }
 
         $params = [
-            'sort' => $sort && isset($this->sortMap[$sort]) ? $this->sortMap[$sort] : ($this->lastTopics ? $this->sortMap['newest'] : $this->sortMap['latest']),
-            'filter' => compact('q'),
-            'page' => ['offset' => 0, 'limit' => $this->getSetting("entries-count", 100)],
-            'include' => $this->lastTopics ? 'firstPost,user' : 'lastPost,lastPostedUser'
+            'sort'    => $sort && isset($this->sortMap[$sort]) ? $this->sortMap[$sort] : ($this->lastTopics ? $this->sortMap['newest'] : $this->sortMap['latest']),
+            'filter'  => compact('q'),
+            'page'    => ['offset' => 0, 'limit' => $this->getSetting('entries-count', 100)],
+            'include' => $this->lastTopics ? 'firstPost,user' : 'lastPost,lastPostedUser',
         ];
 
         $actor = $this->getActor($request);
@@ -120,20 +120,16 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         $entries = [];
         $lastModified = null;
 
-        foreach ($last_discussions->data as $discussion)
-        {
-            if ($discussion->type != 'discussions') continue;
+        foreach ($last_discussions->data as $discussion) {
+            if ($discussion->type != 'discussions') {
+                continue;
+            }
 
-            if ($this->lastTopics && isset($discussion->relationships->firstPost))
-            {
+            if ($this->lastTopics && isset($discussion->relationships->firstPost)) {
                 $content = $this->getRelationship($last_discussions, $discussion->relationships->firstPost);
-            }
-            else if (isset($discussion->relationships->lastPost))
-            {
+            } elseif (isset($discussion->relationships->lastPost)) {
                 $content = $this->getRelationship($last_discussions, $discussion->relationships->lastPost);
-            }
-            else  // Happens when the first or last post is soft-deleted
-            {
+            } else {  // Happens when the first or last post is soft-deleted
                 $content = new \stdClass();
                 $content->contentHtml = '';
             }
@@ -141,43 +137,33 @@ class DiscussionsActivityFeedController extends AbstractFeedController
             $entries[] = [
                 'title'       => $discussion->attributes->title,
                 'content'     => $this->summarize($this->stripHTML($content->contentHtml)),
-                'id'          => $this->url->to('forum')->route('discussion', ['id' => $discussion->id . '-' . $discussion->attributes->slug]),
+                'id'          => $this->url->to('forum')->route('discussion', ['id' => $discussion->id.'-'.$discussion->attributes->slug]),
                 'permalink'   => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug, 'near' => $content->number]),
                 'pubdate'     => $this->parseDate($this->lastTopics ? $discussion->attributes->createdAt : $discussion->attributes->lastPostedAt),
-                'author'      => $this->getRelationship($last_discussions, $this->lastTopics ? $discussion->relationships->user : $discussion->relationships->lastPostedUser)->username
+                'author'      => $this->getRelationship($last_discussions, $this->lastTopics ? $discussion->relationships->user : $discussion->relationships->lastPostedUser)->username,
             ];
 
             $modified = $this->parseDate($this->lastTopics ? $discussion->attributes->createdAt : $discussion->attributes->lastPostedAt);
 
-            if ($lastModified === null || $lastModified < $modified)
-            {
+            if ($lastModified === null || $lastModified < $modified) {
                 $lastModified = $modified;
             }
         }
 
         // TODO real tag names
-        if ($this->lastTopics)
-        {
-            if (empty($tags))
-            {
+        if ($this->lastTopics) {
+            if (empty($tags)) {
                 $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_d_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
                 $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_d_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
-            }
-            else
-            {
+            } else {
                 $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_d_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
                 $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_d_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
             }
-        }
-        else
-        {
-            if (empty($tags))
-            {
+        } else {
+            if (empty($tags)) {
                 $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
                 $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.main_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description]);
-            }
-            else
-            {
+            } else {
                 $title = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_title', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
                 $description = $this->translator->trans('amaurycarrade-syndication.forum.feeds.titles.tag_subtitle', ['{forum_name}' => $forum->attributes->title, '{forum_desc}' => $forum->attributes->description, '{tag}' => implode(', ', $tags)]);
             }
@@ -190,15 +176,16 @@ class DiscussionsActivityFeedController extends AbstractFeedController
             'link'         => $forum->attributes->baseUrl,
             'pubDate'      => new \DateTime(),
             'lastModified' => $lastModified,
-            'entries'      => $entries
+            'entries'      => $entries,
         ];
     }
 
     /**
      * Get the result of an API request to list discussions.
      *
-     * @param User $actor
+     * @param User  $actor
      * @param array $params
+     *
      * @return object
      */
     private function getDocument(User $actor, array $params)
@@ -207,8 +194,10 @@ class DiscussionsActivityFeedController extends AbstractFeedController
     }
 
     /**
-     * Returns the tags to filter on
+     * Returns the tags to filter on.
+     *
      * @param Request $request
+     *
      * @return array|null Tags or null
      */
     protected function getTags(Request $request)

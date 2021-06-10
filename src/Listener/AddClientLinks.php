@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright or © or Copr. flarum-ext-syndication contributor : Amaury
  * Carrade (2016)
  *
@@ -33,21 +34,16 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
+ *
  */
 
 namespace AmauryCarrade\FlarumFeeds\Listener;
 
-use DirectoryIterator;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Str;
 use Flarum\Foundation\Config;
-use Flarum\Event\ConfigureLocales;
 use Flarum\Frontend\Document;
-use Flarum\Frontend\Event\Rendering;
 use Flarum\Tags\Tag;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
 
 class AddClientLinks
 {
@@ -76,26 +72,23 @@ class AddClientLinks
         $route = $request->getAttribute('routeName');
 
         // TODO use reverse routing
-        if (class_exists(Tag::class) && $route === 'tag')
-        {
+        if (class_exists(Tag::class) && $route === 'tag') {
             // TODO use real tag name
             $tag_name = str_replace('/t/', '', $path);
 
-            $this->addAtomFeed($view, 'atom' . $path, $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_activity', ['{tag}' => $tag_name]));
-            $this->addAtomFeed($view, 'atom' . $path . '/d', $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_new_discussions', ['{tag}' => $tag_name]));
-        }
-        else if ($route === 'discussion')
-        {
+            $this->addAtomFeed($view, 'atom'.$path, $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_activity', ['{tag}' => $tag_name]));
+            $this->addAtomFeed($view, 'atom'.$path.'/d', $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_new_discussions', ['{tag}' => $tag_name]));
+        } elseif ($route === 'discussion') {
             // Removes the post number (if any). Reverse routing would be better.
             $path_parts = explode('/', $path);
 
             // TODO add discussion name?
-            $this->addAtomFeed($view, 'atom/d/' . $path_parts[2], $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.discussion_last_posts'));
+            $this->addAtomFeed($view, 'atom/d/'.$path_parts[2], $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.discussion_last_posts'));
         }
     }
 
     private function addAtomFeed(Document $view, $url, $title)
     {
-        $view->head[] = '<link rel="alternate" type="application/atom+xml" title="' . $title . '" href="' . $this->config->url() . '/' . $url . '" />';
+        $view->head[] = '<link rel="alternate" type="application/atom+xml" title="'.$title.'" href="'.$this->config->url().'/'.$url.'" />';
     }
 }

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright or © or Copr. flarum-ext-syndication contributor : Amaury
  * Carrade (2016)
  *
@@ -33,6 +34,7 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
+ *
  */
 
 namespace AmauryCarrade\FlarumFeeds\Controller;
@@ -44,14 +46,11 @@ use Flarum\Tags\TagRepository;
 use Illuminate\Contracts\View\Factory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-
 /**
  * Displays a feed with the last discussions (ordered by first post)
  * in a given tag.
  *
  * Only registered if the tags extension is loaded.
- *
- * @package AmauryCarrade\FlarumFeeds\Controller
  */
 class LastDiscussionsByTagFeedController extends TagsFeedController
 {

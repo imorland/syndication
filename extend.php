@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright or © or Copr. flarum-ext-syndication contributor : Amaury
  * Carrade (2016)
  *
@@ -33,14 +34,15 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
+ *
  */
 
 use AmauryCarrade\FlarumFeeds\Controller;
-use Flarum\Extend;
 use AmauryCarrade\FlarumFeeds\Listener;
+use Flarum\Extend;
 
 return [
-    new Extend\Locales(__DIR__ . '/resources/locale'),
+    new Extend\Locales(__DIR__.'/resources/locale'),
 
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js')
@@ -65,5 +67,5 @@ return [
     (new Extend\Frontend('forum'))
         ->content(Listener\AddClientLinks::class),
 
-    (new Extend\View)->namespace('flarum-feeds', __DIR__.'/views'),
+    (new Extend\View())->namespace('flarum-feeds', __DIR__.'/views'),
 ];
