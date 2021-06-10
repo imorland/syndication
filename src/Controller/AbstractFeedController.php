@@ -181,7 +181,6 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     protected function getAPIDocument(string $endpoint, User $actor, array $params = [], array $body = [])
     {
         $response = $this->api->withQueryParams($params)->withBody($body)->withActor($actor)->get($endpoint);
-        //$response = $this->api->send($endpoint, $actor, $params, $body);
 
         if ($response->getStatusCode() === 404) {
             throw new RouteNotFoundException();
