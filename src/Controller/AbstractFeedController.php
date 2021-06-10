@@ -122,7 +122,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         $feed_type = in_array($feed_type, ['rss', 'atom']) ? $feed_type : 'rss';
 
         $feed_content = array_merge($this->getFeedContent($request), [
-            'self_link'  => rtrim($request->getUri(), " \t\n\r\0\v/").'/',
+            'self_link'  => rtrim($request->getUri(), " \t\n\r\0\v/"),
             'translator' => $this->translator,
             'html'       => $this->getSetting('html', true),
         ]);
