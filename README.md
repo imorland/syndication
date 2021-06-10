@@ -1,7 +1,7 @@
 [![MIT license](https://img.shields.io/static/v1?label=license&message=CeCILL-B&color=blue)](https://github.com/imorland/syndication/blob/master/LICENSE)
 [![Latest Stable Version](https://img.shields.io/packagist/v/ianm/syndication.svg)](https://packagist.org/packages/ianm/syndication)
 [![Total Downloads](https://img.shields.io/packagist/dt/ianm/syndication.svg)](https://packagist.org/packages/ianm/syndication)
-[![Compatibility](https://flarum-badge-api.davwheat.dev/v1/compat-latest/ianm/syndication)](https://flarum-badge-api.davwheat.dev/v1/compat-latest/fof/drafts)
+[![Compatibility](https://flarum-badge-api.davwheat.dev/v1/compat-latest/ianm/syndication)](https://flarum-badge-api.davwheat.dev/v1/compat-latest/ianm/syndication)
 
 # Syndication for [Flarum](https://flarum.org)
 
@@ -35,7 +35,7 @@ Feeds are linked in the pages for autodiscovery. This said, they are not dynamic
 
 ### Links
 
-- [Flarum Discuss post](https://discuss.flarum.org/d/)
+- [Flarum Discuss post](https://discuss.flarum.org/d/27687)
 - [Source code on GitHub](https://github.com/imorland/syndication)
 - [Report an issue](https://github.com/imorland/syndication)
 - [Packagist](https://packagist.org/packages/ianm/syndication)
