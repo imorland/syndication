@@ -9,7 +9,7 @@
     "support": {
         "issues": "https://github.com/imorland/syndication/issues",
         "source": "https://github.com/imorland/syndication",
-        "forum": "https://discuss.flarum.org/d/"
+        "forum": "https://discuss.flarum.org/d/27687"
     },
     "authors": [
         {
@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "flarum/core": "^1.0.0"
+        "flarum/core": "^1.0.2"
     },
     "extra": {
         "flarum-extension": {
@@ -42,7 +42,7 @@
               ]
         },
         "flagrow": {
-            "discuss": "https://discuss.flarum.org/d/"
+            "discuss": "https://discuss.flarum.org/d/27687"
         }
     },
     "autoload": {
