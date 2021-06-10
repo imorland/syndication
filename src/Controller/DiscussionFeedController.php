@@ -43,7 +43,7 @@ use Flarum\User\User;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Arr;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 
@@ -133,7 +133,7 @@ class DiscussionFeedController extends AbstractFeedController
      */
     protected function getDiscussionsDocument(User $actor, array $params)
     {
-        return $this->getAPIDocument('Flarum\Api\Controller\ShowDiscussionController', $actor, $params);
+        return $this->getAPIDocument('/discussions/' . $params['id'], $actor, $params);
     }
 
     /**
@@ -146,6 +146,6 @@ class DiscussionFeedController extends AbstractFeedController
      */
     protected function getPostsDocument(User $actor, array $params)
     {
-        return $this->getAPIDocument('Flarum\Api\Controller\ListPostsController', $actor, $params);
+        return $this->getAPIDocument('/posts', $actor, $params);
     }
 }

@@ -40,7 +40,7 @@ namespace AmauryCarrade\FlarumFeeds\Controller;
 use Flarum\Api\Client as ApiClient;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Illuminate\Contracts\View\Factory;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**

@@ -44,8 +44,9 @@ use Flarum\Foundation\Config;
 use Flarum\Event\ConfigureLocales;
 use Flarum\Frontend\Document;
 use Flarum\Frontend\Event\Rendering;
+use Flarum\Tags\Tag;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 class AddClientLinks
@@ -72,9 +73,10 @@ class AddClientLinks
         $this->addAtomFeed($view, 'atom/d', $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.forum_new_discussions'));
 
         $path = $request->getUri()->getPath();
+        $route = $request->getAttribute('routeName');
 
         // TODO use reverse routing
-        if (class_exists('Flarum\Tags\Tag') && Str::startsWith($path, '/t/'))
+        if (class_exists(Tag::class) && $route === 'tag')
         {
             // TODO use real tag name
             $tag_name = str_replace('/t/', '', $path);
@@ -82,7 +84,7 @@ class AddClientLinks
             $this->addAtomFeed($view, 'atom' . $path, $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_activity', ['{tag}' => $tag_name]));
             $this->addAtomFeed($view, 'atom' . $path . '/d', $this->translator->trans('amaurycarrade-syndication.forum.autodiscovery.tag_new_discussions', ['{tag}' => $tag_name]));
         }
-        else if (Str::startsWith($path, '/d/'))
+        else if ($route === 'discussion')
         {
             // Removes the post number (if any). Reverse routing would be better.
             $path_parts = explode('/', $path);

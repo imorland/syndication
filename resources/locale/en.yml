@@ -20,7 +20,6 @@ amaurycarrade-syndication:
         discussion_subtitle: "Last messages in this discussion"
   admin:
     settings:
-      title: "Syndication Settings"
       full-text:
         label: "Full-Text Feeds"
         help: >-

@@ -2,10 +2,12 @@
 
 Brings RSS and Atom feeds to Flarum.
 
+Based on https://github.com/AmauryCarrade/flarum-ext-syndication, seemingly now abandoned. 
+
 ### Installation
 
 ```bash
-composer require amaurycarrade/flarum-ext-syndication
+composer require ianm/syndication:"*"
 ```
 
 ### Usage
@@ -13,7 +15,7 @@ composer require amaurycarrade/flarum-ext-syndication
 This extension adds the following feeds to Flarum:
 
 - `/atom`: feed with the last discussions with activity (the `/` page as an Atom feed);
-- `/adom/discussions`: feed with the newly created discussions in the forum;
+- `/atom/discussions`: feed with the newly created discussions in the forum;
 - `/atom/t/tag`: feed with the last discussions in the given tag (the `/t/tag` page as an Atom feed);
 - `/atom/t/tag/discussions`: feed with the newly created discussions in the given tag;
 - `/atom/d/21-discussion-slug`: feed with the recent posts in the given discussion.

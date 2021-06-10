@@ -35,8 +35,8 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
 
+use AmauryCarrade\FlarumFeeds\Controller;
 use Flarum\Extend;
-use Illuminate\Contracts\View\Factory;
 use AmauryCarrade\FlarumFeeds\Listener;
 
 return [
@@ -47,27 +47,23 @@ return [
         ->css(__DIR__.'/resources/less/admin.less'),
 
     (new Extend\Routes('forum'))
-        ->get('/rss', 'feeds.rss.global', 'AmauryCarrade\FlarumFeeds\Controller\DiscussionsActivityFeedController')
-        ->get('/atom', 'feeds.atom.global', 'AmauryCarrade\FlarumFeeds\Controller\DiscussionsActivityFeedController')
+        ->get('/rss', 'feeds.rss.global', Controller\DiscussionsActivityFeedController::class)
+        ->get('/atom', 'feeds.atom.global', Controller\DiscussionsActivityFeedController::class)
 
-        ->get('/rss/discussions', 'feeds.rss.discussions', 'AmauryCarrade\FlarumFeeds\Controller\LastDiscussionsFeedController')
-        ->get('/atom/discussions', 'feeds.atom.discussions', 'AmauryCarrade\FlarumFeeds\Controller\LastDiscussionsFeedController')
+        ->get('/rss/discussions', 'feeds.rss.discussions', Controller\LastDiscussionsFeedController::class)
+        ->get('/atom/discussions', 'feeds.atom.discussions', Controller\LastDiscussionsFeedController::class)
 
-        ->get('/rss/d/{id:\d+(?:-[^/]*)?}', 'feeds.rss.discussion', 'AmauryCarrade\FlarumFeeds\Controller\DiscussionFeedController')
-        ->get('/atom/d/{id:\d+(?:-[^/]*)?}', 'feeds.atom.discussion', 'AmauryCarrade\FlarumFeeds\Controller\DiscussionFeedController')
+        ->get('/rss/d/{id:\d+(?:-[^/]*)?}', 'feeds.rss.discussion', Controller\DiscussionFeedController::class)
+        ->get('/atom/d/{id:\d+(?:-[^/]*)?}', 'feeds.atom.discussion', Controller\DiscussionFeedController::class)
 
-        ->get('/rss/t/{tag}', 'feeds.rss.tag', 'AmauryCarrade\FlarumFeeds\Controller\TagsFeedController')
-        ->get('/atom/t/{tag}', 'feeds.atom.tag', 'AmauryCarrade\FlarumFeeds\Controller\TagsFeedController')
+        ->get('/rss/t/{tag}', 'feeds.rss.tag', Controller\TagsFeedController::class)
+        ->get('/atom/t/{tag}', 'feeds.atom.tag', Controller\TagsFeedController::class)
 
-        ->get('/rss/t/{tag}/discussions', 'feeds.rss.tag_discussions', 'AmauryCarrade\FlarumFeeds\Controller\LastDiscussionsByTagFeedController')
-        ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', 'AmauryCarrade\FlarumFeeds\Controller\LastDiscussionsByTagFeedController')
+        ->get('/rss/t/{tag}/discussions', 'feeds.rss.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
+        ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', Controller\LastDiscussionsByTagFeedController::class),
 
-        ->get('/rss/d', 'feeds.rss.discussions.legacy', 'AmauryCarrade\FlarumFeeds\Controller\RedirectsController')
-        ->get('/atom/d', 'feeds.rss.discussions.legacy', 'AmauryCarrade\FlarumFeeds\Controller\RedirectsController')
-        ->get('/rss/t/{tag}/d', 'feeds.rss.discussions.legacy', 'AmauryCarrade\FlarumFeeds\Controller\RedirectsController')
-        ->get('/atom/t/{tag}/d', 'feeds.rss.discussions.legacy', 'AmauryCarrade\FlarumFeeds\Controller\RedirectsController'),
-
-    (new Extend\Frontend('forum'))->content(Listener\AddClientLinks::class),
+    (new Extend\Frontend('forum'))
+        ->content(Listener\AddClientLinks::class),
 
     (new Extend\View)->namespace('flarum-feeds', __DIR__.'/views'),
 ];

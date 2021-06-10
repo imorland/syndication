@@ -38,19 +38,22 @@
 namespace AmauryCarrade\FlarumFeeds\Controller;
 
 use DateTime;
+use Exception;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Flarum\User\User;
 use Flarum\Http\UrlGenerator;
 use Flarum\Api\Client as ApiClient;
+use Flarum\Http\RequestUtil;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Illuminate\Contracts\View\Factory;
+use Illuminate\View\Factory;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
-use Zend\Diactoros\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Laminas\Diactoros\Response;
 
 
 /**
@@ -109,7 +112,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         $this->translator = $translator;
         $this->settings = $settings;
 
-        $this->url = app('Flarum\Http\UrlGenerator');
+        $this->url = resolve(UrlGenerator::class);
     }
 
     /**
@@ -127,8 +130,8 @@ abstract class AbstractFeedController implements RequestHandlerInterface
             'html' => $this->getSetting("html", true),
         ]);
 
-        $response = new Response;
-        $response->getBody()->write($this->view->make('flarum-feeds::' . $feed_type, $feed_content));
+        $response = new Response();
+        $response->getBody()->write($this->view->make('flarum-feeds::' . $feed_type, $feed_content)->render());
 
         /**
          * @var DateTime $lastModified
@@ -162,7 +165,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected function getActor(ServerRequestInterface $request)
     {
-        return $request->getAttribute('actor');
+        return RequestUtil::getActor($request);
     }
 
     /**
@@ -176,12 +179,14 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * @return \stdClass API response.
      * @throws RouteNotFoundException If the API endpoint cannot be found, or if it cannot find what requested.
      */
-    protected function getAPIDocument($endpoint, User $actor, array $params = [], array $body = [])
+    protected function getAPIDocument(string $endpoint, User $actor, array $params = [], array $body = [])
     {
-        $response = $this->api->send($endpoint, $actor, $params, $body);
+        $response = $this->api->withQueryParams($params)->withBody($body)->withActor($actor)->get($endpoint);
+        //$response = $this->api->send($endpoint, $actor, $params, $body);
 
-        if ($response->getStatusCode() === 404)
+        if ($response->getStatusCode() === 404) {
             throw new RouteNotFoundException;
+        }
 
         return json_decode($response->getBody());
     }
@@ -194,7 +199,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected function getForumDocument(User $actor)
     {
-        return $this->getAPIDocument('Flarum\Api\Controller\ShowForumController', $actor)->data;
+        return $this->getAPIDocument('/', $actor)->data;
     }
 
     /**
@@ -377,7 +382,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * @param ServerRequestInterface $request The request
      * @return string 'rss' or 'atom', defaults to 'rss'.
      */
-    protected function getFeedType(ServerRequestInterface $request)
+    protected function getFeedType(ServerRequestInterface $request): string
     {
         $path = strtolower($request->getUri()->getPath());
         return Str::startsWith($path, '/atom') ? 'atom' : 'rss';

@@ -43,7 +43,7 @@ use Flarum\User\User;
 use Flarum\Api\Client as ApiClient;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Arr;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
@@ -203,7 +203,7 @@ class DiscussionsActivityFeedController extends AbstractFeedController
      */
     private function getDocument(User $actor, array $params)
     {
-        return $this->getAPIDocument('Flarum\Api\Controller\ListDiscussionsController', $actor, $params);
+        return $this->getAPIDocument('/discussions', $actor, $params);
     }
 
     /**

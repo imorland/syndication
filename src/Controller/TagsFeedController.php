@@ -45,7 +45,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Flarum\Api\Client as ApiClient;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Arr;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 
 /**
