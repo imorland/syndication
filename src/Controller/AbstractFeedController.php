@@ -169,10 +169,10 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * Retrieves an API response from the given endpoint.
      *
      * @param Request $request
-     * @param string $endpoint The API endpoint.
-     * @param User   $actor    The request actor.
-     * @param array  $params   The API request parameters (if any).
-     * @param array  $body     The API request body (if any).
+     * @param string  $endpoint The API endpoint.
+     * @param User    $actor    The request actor.
+     * @param array   $params   The API request parameters (if any).
+     * @param array   $body     The API request body (if any).
      *
      * @throws RouteNotFoundException If the API endpoint cannot be found, or if it cannot find what requested.
      *
@@ -193,7 +193,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * Get the result of an API request to show the forum.
      *
      * @param Request $request
-     * @param User $actor
+     * @param User    $actor
      *
      * @return \stdClass
      */

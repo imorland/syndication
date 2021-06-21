@@ -125,8 +125,8 @@ class DiscussionFeedController extends AbstractFeedController
      * Get the result of an API request to show a discussion.
      *
      * @param Request $request
-     * @param User  $actor
-     * @param array $params
+     * @param User    $actor
+     * @param array   $params
      *
      * @throws RouteNotFoundException
      *
@@ -141,8 +141,8 @@ class DiscussionFeedController extends AbstractFeedController
      * Get the result of an API request to list a discussion posts.
      *
      * @param Request $request
-     * @param User  $actor
-     * @param array $params
+     * @param User    $actor
+     * @param array   $params
      *
      * @throws RouteNotFoundException
      *

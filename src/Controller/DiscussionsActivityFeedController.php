@@ -120,7 +120,7 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         $entries = [];
         $lastModified = null;
 
-        foreach ((array)$last_discussions->data as $discussion) {
+        foreach ((array) $last_discussions->data as $discussion) {
             if ($discussion->type != 'discussions') {
                 continue;
             }
@@ -184,8 +184,8 @@ class DiscussionsActivityFeedController extends AbstractFeedController
      * Get the result of an API request to list discussions.
      *
      * @param Request $request
-     * @param User  $actor
-     * @param array $params
+     * @param User    $actor
+     * @param array   $params
      *
      * @return object
      */
