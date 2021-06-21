@@ -70,14 +70,14 @@ class DiscussionFeedController extends AbstractFeedController
 
         $actor = $this->getActor($request);
 
-        $discussion = $this->getDiscussionsDocument($actor, [
+        $discussion = $this->getDiscussionsDocument($request, $actor, [
             'id'   => $discussion_id,
             'page' => [
                 'limit' => 1,
             ],
         ])->data;
 
-        $posts = $this->getPostsDocument($actor, [
+        $posts = $this->getPostsDocument($request, $actor, [
             'filter' => [
                 'discussion' => $discussion_id,
             ],
@@ -124,6 +124,7 @@ class DiscussionFeedController extends AbstractFeedController
     /**
      * Get the result of an API request to show a discussion.
      *
+     * @param Request $request
      * @param User  $actor
      * @param array $params
      *
@@ -131,14 +132,15 @@ class DiscussionFeedController extends AbstractFeedController
      *
      * @return object
      */
-    protected function getDiscussionsDocument(User $actor, array $params)
+    protected function getDiscussionsDocument(Request $request, User $actor, array $params)
     {
-        return $this->getAPIDocument('/discussions/'.$params['id'], $actor, $params);
+        return $this->getAPIDocument($request, '/discussions/'.$params['id'], $actor, $params);
     }
 
     /**
      * Get the result of an API request to list a discussion posts.
      *
+     * @param Request $request
      * @param User  $actor
      * @param array $params
      *
@@ -146,8 +148,8 @@ class DiscussionFeedController extends AbstractFeedController
      *
      * @return object
      */
-    protected function getPostsDocument(User $actor, array $params)
+    protected function getPostsDocument(Request $request, User $actor, array $params)
     {
-        return $this->getAPIDocument('/posts', $actor, $params);
+        return $this->getAPIDocument($request, '/posts', $actor, $params);
     }
 }
