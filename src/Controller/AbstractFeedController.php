@@ -168,18 +168,19 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     /**
      * Retrieves an API response from the given endpoint.
      *
-     * @param string $endpoint The API endpoint.
-     * @param User   $actor    The request actor.
-     * @param array  $params   The API request parameters (if any).
-     * @param array  $body     The API request body (if any).
+     * @param Request $request
+     * @param string  $endpoint The API endpoint.
+     * @param User    $actor    The request actor.
+     * @param array   $params   The API request parameters (if any).
+     * @param array   $body     The API request body (if any).
      *
      * @throws RouteNotFoundException If the API endpoint cannot be found, or if it cannot find what requested.
      *
      * @return \stdClass API response.
      */
-    protected function getAPIDocument(string $endpoint, User $actor, array $params = [], array $body = [])
+    protected function getAPIDocument(Request $request, string $endpoint, User $actor, array $params = [], array $body = [])
     {
-        $response = $this->api->withQueryParams($params)->withBody($body)->withActor($actor)->get($endpoint);
+        $response = $this->api->withParentRequest($request)->withQueryParams($params)->withBody($body)->withActor($actor)->get($endpoint);
 
         if ($response->getStatusCode() === 404) {
             throw new RouteNotFoundException();
@@ -191,13 +192,14 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     /**
      * Get the result of an API request to show the forum.
      *
-     * @param User $actor
+     * @param Request $request
+     * @param User    $actor
      *
      * @return \stdClass
      */
-    protected function getForumDocument(User $actor)
+    protected function getForumDocument(Request $request, User $actor)
     {
-        return $this->getAPIDocument('/', $actor)->data;
+        return $this->getAPIDocument($request, '/', $actor)->data;
     }
 
     /**

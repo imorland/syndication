@@ -114,13 +114,13 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         ];
 
         $actor = $this->getActor($request);
-        $forum = $this->getForumDocument($actor);
-        $last_discussions = $this->getDocument($actor, $params);
+        $forum = $this->getForumDocument($request, $actor);
+        $last_discussions = $this->getDocument($request, $actor, $params);
 
         $entries = [];
         $lastModified = null;
 
-        foreach ($last_discussions->data as $discussion) {
+        foreach ((array) $last_discussions->data as $discussion) {
             if ($discussion->type != 'discussions') {
                 continue;
             }
@@ -183,14 +183,15 @@ class DiscussionsActivityFeedController extends AbstractFeedController
     /**
      * Get the result of an API request to list discussions.
      *
-     * @param User  $actor
-     * @param array $params
+     * @param Request $request
+     * @param User    $actor
+     * @param array   $params
      *
      * @return object
      */
-    private function getDocument(User $actor, array $params)
+    private function getDocument(Request $request, User $actor, array $params)
     {
-        return $this->getAPIDocument('/discussions', $actor, $params);
+        return $this->getAPIDocument($request, '/discussions', $actor, $params);
     }
 
     /**
