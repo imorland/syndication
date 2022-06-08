@@ -7,26 +7,13 @@ app.initializers.add('ianm-syndication', () => {
       label: app.translator.trans('ianm-syndication.admin.settings.full-text.label'),
       setting: 'ianm-syndication.plugin.full-text',
       type: 'boolean',
-    })
-    .registerSetting(function () {
-      return (
-        <div>
-          <p>{app.translator.trans('ianm-syndication.admin.settings.full-text.help')}</p>
-          <p>{app.translator.trans('ianm-syndication.admin.settings.full-text.recommendation')}</p>
-        </div>
-      );
+      help: app.translator.trans('ianm-syndication.admin.settings.full-text.help')
     })
     .registerSetting({
       label: app.translator.trans('ianm-syndication.admin.settings.html.label'),
       setting: 'ianm-syndication.plugin.html',
       type: 'boolean',
-    })
-    .registerSetting(function () {
-      return (
-        <div>
-          <p>{app.translator.trans('ianm-syndication.admin.settings.html.help')}</p>
-        </div>
-      );
+      help: app.translator.trans('ianm-syndication.admin.settings.html.help')
     })
     .registerSetting({
       label: app.translator.trans('ianm-syndication.admin.settings.entries-count'),

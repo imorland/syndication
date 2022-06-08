@@ -25,7 +25,6 @@ ianm-syndication:
         help: >-
           If disabled, feeds will only contain excerpts of posts,
           and users will have to go to the forum to read everything.
-        recommendation: >-
           I would recommend to leave this option active in order to respect
           the people following the forum from an RSS aggregator—if any.
       html:
