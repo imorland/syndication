@@ -47,6 +47,9 @@ return [
     (new Extend\Frontend('admin'))
         ->js(__DIR__.'/js/dist/admin.js'),
 
+    (new Extend\Frontend('forum'))
+        ->js(__DIR__.'/js/dist/forum.js'),
+
     (new Extend\Routes('forum'))
         ->get('/rss', 'feeds.rss.global', Controller\DiscussionsActivityFeedController::class)
         ->get('/atom', 'feeds.atom.global', Controller\DiscussionsActivityFeedController::class)
@@ -67,4 +70,13 @@ return [
         ->content(Listener\AddClientLinks::class),
 
     (new Extend\View())->namespace('flarum-feeds', __DIR__.'/views'),
+
+    (new Extend\Settings())
+        ->default('ianm-syndication.plugin.html', false)
+        ->default('ianm-syndication.plugin.full-text', false)
+        ->default('ianm-syndication.plugin.entries-count', 100)
+        ->default('ianm-syndication.plugin.forum-format', 'atom')
+        ->default('ianm-syndication.plugin.forum-icons', false)
+        ->serializeToForum('ianm-syndication.plugin.forum-format', 'ianm-syndication.plugin.forum-format')
+        ->serializeToForum('ianm-syndication.plugin.forum-icons', 'ianm-syndication.plugin.forum-icons', 'boolVal'),
 ];

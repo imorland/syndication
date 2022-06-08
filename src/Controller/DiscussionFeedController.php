@@ -41,6 +41,7 @@ namespace IanM\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
 use Flarum\Http\Exception\RouteNotFoundException;
+use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\View\Factory;
@@ -53,9 +54,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DiscussionFeedController extends AbstractFeedController
 {
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings)
+    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url)
     {
-        parent::__construct($view, $api, $translator, $settings);
+        parent::__construct($view, $api, $translator, $settings, $url);
     }
 
     /**
@@ -83,7 +84,7 @@ class DiscussionFeedController extends AbstractFeedController
             ],
             'page' => [
                 'offset' => 0,
-                'limit'  => $this->getSetting('entries-count', 100),
+                'limit'  => $this->getSetting('entries-count'),
             ],
             'sort' => '-createdAt',
         ]);

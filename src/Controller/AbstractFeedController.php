@@ -100,15 +100,15 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * @param ApiClient                   $api
      * @param TranslatorInterface         $translator
      * @param SettingsRepositoryInterface $settings
+     * @param UrlGenerator                $url
      */
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings)
+    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url)
     {
         $this->view = $view;
         $this->api = $api;
         $this->translator = $translator;
         $this->settings = $settings;
-
-        $this->url = resolve(UrlGenerator::class);
+        $this->url = $url;
     }
 
     /**
@@ -123,7 +123,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
 
         $feed_content = array_merge($this->getFeedContent($request), [
             'self_link'  => rtrim($request->getUri(), " \t\n\r\0\v/"),
-            'html'       => $this->getSetting('html', true),
+            'html'       => $this->getSetting('html'),
         ]);
 
         $response = new Response();
@@ -146,13 +146,12 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * Returns a setting for this extension.
      *
      * @param string $key     The key.
-     * @param mixed  $default The default value (optional).
      *
      * @return mixed The setting's value.
      */
-    protected function getSetting($key, $default = null)
+    protected function getSetting($key)
     {
-        return $this->settings->get('ianm-syndication.plugin.'.$key, $default);
+        return $this->settings->get('ianm-syndication.plugin.'.$key);
     }
 
     /**
@@ -235,7 +234,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected function summarize($content, $length = 400)
     {
-        if ($this->getSetting('full-text', true)) {
+        if ($this->getSetting('full-text')) {
             return $content;
         } else {
             return $this->truncate($content, $length, ['exact' => false, 'html' => true]);
@@ -251,7 +250,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected function stripHTML($content)
     {
-        return $this->getSetting('html', true) ? $content : strip_tags($content);
+        return $this->getSetting('html') ? $content : strip_tags($content);
     }
 
     /**

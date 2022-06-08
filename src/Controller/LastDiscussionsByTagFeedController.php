@@ -41,6 +41,7 @@ namespace IanM\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
 use Flarum\Extension\ExtensionManager;
+use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\Tags\TagRepository;
 use Illuminate\Contracts\View\Factory;
@@ -54,8 +55,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class LastDiscussionsByTagFeedController extends TagsFeedController
 {
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, ExtensionManager $extensions, TagRepository $tagRepository)
+    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, ExtensionManager $extensions, TagRepository $tagRepository)
     {
-        parent::__construct($view, $api, $translator, $settings, $extensions, $tagRepository, true);
+        parent::__construct($view, $api, $translator, $settings, $url, $extensions, $tagRepository, true);
     }
 }

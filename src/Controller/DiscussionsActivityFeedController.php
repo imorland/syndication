@@ -40,6 +40,7 @@
 namespace IanM\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
+use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
 use Illuminate\Contracts\View\Factory;
@@ -55,18 +56,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DiscussionsActivityFeedController extends AbstractFeedController
 {
     /**
-     * A map of sort query param values to their API sort param.
-     *
-     * @var array
-     */
-    private $sortMap = [
-        'latest' => '-lastPostedAt',
-        'top'    => '-commentCount',
-        'newest' => '-createdAt',
-        'oldest' => 'createdAt',
-    ];
-
-    /**
      * @var bool true to display topics ordered by creation date with first post instead of activity
      */
     private $lastTopics;
@@ -77,9 +66,9 @@ class DiscussionsActivityFeedController extends AbstractFeedController
      * @param TranslatorInterface $translator
      * @param bool                $lastTopics
      */
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, $lastTopics = false)
+    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, $lastTopics = false)
     {
-        parent::__construct($view, $api, $translator, $settings);
+        parent::__construct($view, $api, $translator, $settings, $url);
 
         $this->lastTopics = $lastTopics;
     }
@@ -92,6 +81,8 @@ class DiscussionsActivityFeedController extends AbstractFeedController
     protected function getFeedContent(Request $request)
     {
         $queryParams = $request->getQueryParams();
+
+        $sortMap = resolve('flarum.forum.discussions.sortmap');
 
         $sort = Arr::pull($queryParams, 'sort');
         $q = Arr::pull($queryParams, 'q');
@@ -107,9 +98,9 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         }
 
         $params = [
-            'sort'    => $sort && isset($this->sortMap[$sort]) ? $this->sortMap[$sort] : ($this->lastTopics ? $this->sortMap['newest'] : $this->sortMap['latest']),
+            'sort'    => $sort && isset($sortMap[$sort]) ? $sortMap[$sort] : ($this->lastTopics ? $sortMap['newest'] : $sortMap['latest']),
             'filter'  => compact('q'),
-            'page'    => ['offset' => 0, 'limit' => $this->getSetting('entries-count', 100)],
+            'page'    => ['offset' => 0, 'limit' => $this->getSetting('entries-count')],
             'include' => $this->lastTopics ? 'firstPost,user' : 'lastPost,lastPostedUser',
         ];
 

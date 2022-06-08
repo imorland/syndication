@@ -31,3 +31,9 @@ ianm-syndication:
         label: "Formatted Feeds"
         help: "Check this to keep the HTML in the generated feeds. If disabled, the feeds will be in plain text."
       entries-count: "How many entries per feed?"
+      forum-icons:
+        label: Show Atom/RSS feed links on the forum
+        help: Displays icons in All Discussions, Tags and Discussions to allow easy access to the feed(s).
+      forum-link-format:
+        label: Forum feed format
+        help: Select which format (Atom or RSS) should be used when the links are displayed on the forum.
