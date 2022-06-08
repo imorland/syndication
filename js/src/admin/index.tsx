@@ -2,8 +2,8 @@ import app from 'flarum/admin/app';
 
 app.initializers.add('ianm-syndication', () => {
   const typeOptions = {
-    'atom': 'atom',
-    'rss': 'rss',
+    atom: 'atom',
+    rss: 'rss',
   };
 
   console.log(typeOptions);
@@ -13,20 +13,20 @@ app.initializers.add('ianm-syndication', () => {
       label: app.translator.trans('ianm-syndication.admin.settings.full-text.label'),
       setting: 'ianm-syndication.plugin.full-text',
       type: 'boolean',
-      help: app.translator.trans('ianm-syndication.admin.settings.full-text.help')
+      help: app.translator.trans('ianm-syndication.admin.settings.full-text.help'),
     })
     .registerSetting({
       label: app.translator.trans('ianm-syndication.admin.settings.html.label'),
       setting: 'ianm-syndication.plugin.html',
       type: 'boolean',
-      help: app.translator.trans('ianm-syndication.admin.settings.html.help')
+      help: app.translator.trans('ianm-syndication.admin.settings.html.help'),
     })
     .registerSetting({
       label: app.translator.trans('ianm-syndication.admin.settings.entries-count'),
       setting: 'ianm-syndication.plugin.entries-count',
       type: 'number',
       placeholder: 100,
-      min: 1
+      min: 1,
     })
     .registerSetting({
       label: app.translator.trans('ianm-syndication.admin.settings.forum-icons.label'),
@@ -40,6 +40,6 @@ app.initializers.add('ianm-syndication', () => {
       setting: 'ianm-syndication.plugin.forum-format',
       type: 'select',
       options: typeOptions,
-      default: 'atom'
+      default: 'atom',
     });
 });
