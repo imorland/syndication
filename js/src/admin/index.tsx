@@ -6,7 +6,6 @@ app.initializers.add('ianm-syndication', () => {
     rss: 'rss',
   };
 
-  console.log(typeOptions);
   app.extensionData
     .for('ianm-syndication')
     .registerSetting({
