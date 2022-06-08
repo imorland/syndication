@@ -145,7 +145,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     /**
      * Returns a setting for this extension.
      *
-     * @param string $key     The key.
+     * @param string $key The key.
      *
      * @return mixed The setting's value.
      */
