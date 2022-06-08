@@ -139,7 +139,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
             $response = $response->withHeader('Last-Modified', $lastModified->format('D, d M Y H:i:s \G\M\T'));
         }
 
-        return $response->withHeader('Content-Type', $this->content_types[$feed_type].'; charset=utf8');
+        return $response->withHeader('Content-Type', $this->content_types[$feed_type].'; charset=utf-8');
     }
 
     /**
