@@ -4,7 +4,9 @@ import { extend } from 'flarum/common/extend';
 import IndexPage from 'flarum/forum/components/IndexPage';
 import type Mithril from 'mithril';
 import DiscussionPage from 'flarum/forum/components/DiscussionPage';
+import DiscussionControls from 'flarum/forum/utils/DiscussionControls';
 import LinkButton from 'flarum/common/components/LinkButton';
+import Discussion from 'flarum/common/models/Discussion';
 
 export default function addFeedIcons() {
   extend(IndexPage.prototype, 'actionItems', function (items: ItemList<Mithril.Children>) {
@@ -26,7 +28,7 @@ export default function addFeedIcons() {
     items.add('rss-feed', <LinkButton icon="fas fa-rss" className="Button Button--icon" href={url} target="_blank" />, 105);
   });
 
-  extend(DiscussionPage.prototype, 'sidebarItems', function (items: ItemList<Mithril.Children>) {
+  extend(DiscussionControls, 'userControls', function (items: ItemList<Mithril.Children>, discussion: Discussion) {
     if (!app.forum.attribute('ianm-syndication.plugin.forum-icons')) {
       return;
     }
@@ -35,14 +37,9 @@ export default function addFeedIcons() {
 
     items.add(
       'rss-link',
-      <LinkButton
-        className="Button Button--icon"
-        icon="fas fa-rss"
-        href={app.forum.attribute('baseUrl') + `/${format}/d/` + this.discussion.id()}
-        external={true}
-        target="_blank"
-      />,
-      10
+      <LinkButton icon="fas fa-rss" href={app.forum.attribute('baseUrl') + `/${format}/d/` + discussion.id()} external={true} target="_blank">
+        {app.translator.trans('ianm-syndication.forum.discussion.feed_link')}
+      </LinkButton>
     );
   });
 }

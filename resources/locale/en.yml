@@ -18,6 +18,8 @@ ianm-syndication:
         tag_d_subtitle: "The newest discussions in the {tag} tag"
         discussion_title: "{discussion_name}"
         discussion_subtitle: "Last messages in this discussion"
+    discussion:
+      feed_link: Feed
   admin:
     settings:
       full-text:
