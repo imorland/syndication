@@ -102,7 +102,7 @@ class DiscussionFeedController extends AbstractFeedController
                 'content'     => $this->summarize($this->stripHTML($post->attributes->contentHtml)),
                 'permalink'   => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug, 'near' => $post->attributes->number]),
                 'pubdate'     => $this->parseDate($post->attributes->createdAt),
-                'author'      => $this->getRelationship($posts, $post->relationships->user)->username,
+                'author'      => isset($post->relationships->user) ? $this->getRelationship($posts, $post->relationships->user)->username : '[deleted]',
             ];
 
             $modified = $this->parseDate(Arr::get($post->attributes, 'editedAt', $post->attributes->createdAt));
