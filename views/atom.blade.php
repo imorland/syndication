@@ -6,14 +6,14 @@
     <subtitle><![CDATA[{!! $description !!}]]></subtitle>
     <link href="{{ $self_link }}" rel="self" />
     <link href="{{ $link }}/" />
-    <id><![CDATA[{!! $link !!}/]]></id>
+    <id>{{ $id }}</id>
     <updated>{{ $pubDate->format(DateTime::ATOM) }}</updated>
 
     @foreach ($entries as $entry)
     <entry>
         <title><![CDATA[{!! $entry['title'] !!}]]></title>
         <link rel="alternate" type="text/html" href="{{ $entry['permalink'] }}"/>
-        <id>{{ $entry['permalink'] }}</id>
+        <id>{{ $entry['id'] }}</id>
         <updated>{{ $entry['pubdate']->format(DateTime::ATOM) }}</updated>
         <content
         @if ($html)

@@ -86,6 +86,11 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     protected $settings;
 
     /**
+     * @var string Must be defined by the subclasses to contain the last bit of the route name
+     */
+    protected $routeName;
+
+    /**
      * Content-Types for feeds.
      *
      * @var array
@@ -123,6 +128,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
 
         $feed_content = array_merge($this->getFeedContent($request), [
             'self_link'  => rtrim($request->getUri(), " \t\n\r\0\v/"),
+            'id'         => $this->getFeedId($request->getQueryParams(), $feed_type),
             'html'       => $this->getSetting('html'),
         ]);
 
@@ -395,5 +401,18 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         $path = strtolower($request->getUri()->getPath());
 
         return Str::startsWith($path, '/atom') ? 'atom' : 'rss';
+    }
+
+    /**
+     * Get the Id of the current field.
+     * It is generated from the current route and its query parameters.
+     * Only used in atom feeds for now.
+     *
+     * @param array  $queryParams Query parameters of the feed request.
+     * @param string $feedType    Type of the current feed.
+     */
+    protected function getFeedId(array $queryParams, string $feedType): string
+    {
+        return $this->url->to('forum')->route("feeds.$feedType.$this->routeName", $queryParams);
     }
 }

@@ -50,6 +50,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class LastDiscussionsFeedController extends DiscussionsActivityFeedController
 {
+    protected $routeName = 'discussions';
+
     public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url)
     {
         parent::__construct($view, $api, $translator, $settings, $url, true);
