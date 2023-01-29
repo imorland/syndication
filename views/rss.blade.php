@@ -12,9 +12,9 @@
         @foreach ($entries as $entry)
         <item>
             <title><![CDATA[{!! $entry['title'] !!}]]></title>
-            <link>{{ $entry['permalink'] }}</link>
+            <link>{{ $entry['link'] }}</link>
             <description><![CDATA[{!! $entry['content'] !!}]]></description>
-            <guid>{{ $entry['permalink'] }}</guid>
+            <guid isPermaLink="true">{{ $entry['id'] }}</guid>
             <pubDate>{{ $entry['pubdate']->format(DateTime::RSS) }}</pubDate>
         </item>
         @endforeach

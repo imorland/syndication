@@ -12,7 +12,7 @@
     @foreach ($entries as $entry)
     <entry>
         <title><![CDATA[{!! $entry['title'] !!}]]></title>
-        <link rel="alternate" type="text/html" href="{{ $entry['permalink'] }}"/>
+        <link rel="alternate" type="text/html" href="{{ $entry['link'] }}"/>
         <id>{{ $entry['id'] }}</id>
         <updated>{{ $entry['pubdate']->format(DateTime::ATOM) }}</updated>
         <content
