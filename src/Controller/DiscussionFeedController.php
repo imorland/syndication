@@ -157,7 +157,7 @@ class DiscussionFeedController extends AbstractFeedController
         return $this->getAPIDocument($request, '/posts', $actor, $params);
     }
 
-    protected function getFeedId(array $queryParams, string $feedType): string
+    protected function getPermalink(array $queryParams, string $feedType): string
     {
         // Remove the slug from the Id if it is present.
         // The Id of the feed should not change if the discussion is renamed.
@@ -166,6 +166,6 @@ class DiscussionFeedController extends AbstractFeedController
             $queryParams['id'] = $id;
         }
 
-        return parent::getFeedId($queryParams, $feedType);
+        return parent::getPermalink($queryParams, $feedType);
     }
 }

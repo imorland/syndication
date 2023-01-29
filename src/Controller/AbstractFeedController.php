@@ -406,7 +406,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     /**
      * Get the "self" link of the current feed.
      * A feed's "self" link is kind of the "canonical" link of a Web page.
-     * By default it is the same as the Id of the feed, as the Id is a
+     * By default we use the feed's permalink, as it is a
      * unique URI for this feed, generated from its route.
      *
      * @param array  $queryParams Query parameters of the feed request.
@@ -414,18 +414,33 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected function getFeedSelf(array $queryParams, string $feedType): string
     {
-        return $this->getFeedId($queryParams, $feedType);
+        return $this->getPermalink($queryParams, $feedType);
     }
 
     /**
      * Get the Id of the current feed.
-     * It is a unique URI for this feed, generated from the current route
-     * and its query parameters.
+     * By default we use the feed's permalink, as it is a
+     * unique URI for this feed, generated from its route.
      *
      * @param array  $queryParams Query parameters of the feed request.
      * @param string $feedType    Type of the current feed.
      */
     protected function getFeedId(array $queryParams, string $feedType): string
+    {
+        return $this->getPermalink($queryParams, $feedType);
+    }
+
+    /**
+     * Get the permalink of the current feed.
+     * It is a unique URI for this feed, generated from the current route
+     * and its query parameters.
+     * The permalink must not change even if the resource's name changed,
+     * so it must not include the slug.
+     *
+     * @param array  $queryParams Query parameters of the feed request.
+     * @param string $feedType    Type of the current feed.
+     */
+    protected function getPermalink(array $queryParams, string $feedType): string
     {
         return $this->url->to('forum')->route("feeds.$feedType.$this->routeName", $queryParams);
     }
