@@ -54,6 +54,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DiscussionFeedController extends AbstractFeedController
 {
+    protected $routeName = 'discussion';
+
     public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url)
     {
         parent::__construct($view, $api, $translator, $settings, $url);
@@ -100,7 +102,8 @@ class DiscussionFeedController extends AbstractFeedController
             $entries[] = [
                 'title'       => $discussion->attributes->title,
                 'content'     => $this->summarize($this->stripHTML($post->attributes->contentHtml)),
-                'permalink'   => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug, 'near' => $post->attributes->number]),
+                'link'        => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug, 'near' => $post->attributes->number]),
+                'id'          => $this->url->to('forum')->route('discussion', ['id' => $discussion->id, 'near' => $post->attributes->number]),
                 'pubdate'     => $this->parseDate($post->attributes->createdAt),
                 'author'      => isset($post->relationships->user) ? $this->getRelationship($posts, $post->relationships->user)->username : '[deleted]',
             ];
@@ -115,7 +118,7 @@ class DiscussionFeedController extends AbstractFeedController
         return [
             'title'        => $this->translator->trans('ianm-syndication.forum.feeds.titles.discussion_title', ['{discussion_name}' => $discussion->attributes->title]),
             'description'  => $this->translator->trans('ianm-syndication.forum.feeds.titles.discussion_subtitle', ['{discussion_name}' => $discussion->attributes->title]),
-            'link'         => $this->url->to('forum')->route('discussion', ['id' => $discussion->id.'-'.$discussion->attributes->slug]),
+            'link'         => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug]),
             'pubDate'      => new \DateTime(),
             'lastModified' => $lastModified,
             'entries'      => $entries,
@@ -152,5 +155,17 @@ class DiscussionFeedController extends AbstractFeedController
     protected function getPostsDocument(Request $request, User $actor, array $params)
     {
         return $this->getAPIDocument($request, '/posts', $actor, $params);
+    }
+
+    protected function getPermalink(array $queryParams, string $feedType): string
+    {
+        // Remove the slug from the Id if it is present.
+        // The Id of the feed should not change if the discussion is renamed.
+        $id = strstr($queryParams['id'], '-', true);
+        if ($id != false) {
+            $queryParams['id'] = $id;
+        }
+
+        return parent::getPermalink($queryParams, $feedType);
     }
 }

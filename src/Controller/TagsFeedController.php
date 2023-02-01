@@ -55,6 +55,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class TagsFeedController extends DiscussionsActivityFeedController
 {
+    protected $routeName = 'tag';
+
     /**
      * @var TagRepository
      */

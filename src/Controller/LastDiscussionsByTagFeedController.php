@@ -55,6 +55,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class LastDiscussionsByTagFeedController extends TagsFeedController
 {
+    protected $routeName = 'tag_discussions';
+
     public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, ExtensionManager $extensions, TagRepository $tagRepository)
     {
         parent::__construct($view, $api, $translator, $settings, $url, $extensions, $tagRepository, true);

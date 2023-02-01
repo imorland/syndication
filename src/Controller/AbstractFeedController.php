@@ -86,6 +86,11 @@ abstract class AbstractFeedController implements RequestHandlerInterface
     protected $settings;
 
     /**
+     * @var string Must be defined by the subclasses to contain the last bit of the route name
+     */
+    protected $routeName;
+
+    /**
      * Content-Types for feeds.
      *
      * @var array
@@ -122,7 +127,8 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         $feed_type = in_array($feed_type, ['rss', 'atom']) ? $feed_type : 'rss';
 
         $feed_content = array_merge($this->getFeedContent($request), [
-            'self_link'  => rtrim($request->getUri(), " \t\n\r\0\v/"),
+            'self_link'  => $this->getFeedSelf($request->getQueryParams(), $feed_type),
+            'id'         => $this->getFeedId($request->getQueryParams(), $feed_type),
             'html'       => $this->getSetting('html'),
         ]);
 
@@ -395,5 +401,47 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         $path = strtolower($request->getUri()->getPath());
 
         return Str::startsWith($path, '/atom') ? 'atom' : 'rss';
+    }
+
+    /**
+     * Get the "self" link of the current feed.
+     * A feed's "self" link is kind of the "canonical" link of a Web page.
+     * By default we use the feed's permalink, as it is a
+     * unique URI for this feed, generated from its route.
+     *
+     * @param array  $queryParams Query parameters of the feed request.
+     * @param string $feedType    Type of the current feed.
+     */
+    protected function getFeedSelf(array $queryParams, string $feedType): string
+    {
+        return $this->getPermalink($queryParams, $feedType);
+    }
+
+    /**
+     * Get the Id of the current feed.
+     * By default we use the feed's permalink, as it is a
+     * unique URI for this feed, generated from its route.
+     *
+     * @param array  $queryParams Query parameters of the feed request.
+     * @param string $feedType    Type of the current feed.
+     */
+    protected function getFeedId(array $queryParams, string $feedType): string
+    {
+        return $this->getPermalink($queryParams, $feedType);
+    }
+
+    /**
+     * Get the permalink of the current feed.
+     * It is a unique URI for this feed, generated from the current route
+     * and its query parameters.
+     * The permalink must not change even if the resource's name changed,
+     * so it must not include the slug.
+     *
+     * @param array  $queryParams Query parameters of the feed request.
+     * @param string $feedType    Type of the current feed.
+     */
+    protected function getPermalink(array $queryParams, string $feedType): string
+    {
+        return $this->url->to('forum')->route("feeds.$feedType.$this->routeName", $queryParams);
     }
 }

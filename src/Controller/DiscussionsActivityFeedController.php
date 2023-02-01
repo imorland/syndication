@@ -60,6 +60,8 @@ class DiscussionsActivityFeedController extends AbstractFeedController
      */
     private $lastTopics;
 
+    protected $routeName = 'global';
+
     /**
      * @param Factory             $view
      * @param ApiClient           $api
@@ -133,8 +135,8 @@ class DiscussionsActivityFeedController extends AbstractFeedController
             $entries[] = [
                 'title'       => $discussion->attributes->title,
                 'content'     => $this->summarize($this->stripHTML($content->contentHtml)),
-                'id'          => $this->url->to('forum')->route('discussion', ['id' => $discussion->id.'-'.$discussion->attributes->slug]),
-                'permalink'   => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug, 'near' => $content->number]),
+                'id'          => $this->url->to('forum')->route('discussion', ['id' => $discussion->id, 'near' => $content->number]),
+                'link'        => $this->url->to('forum')->route('discussion', ['id' => $discussion->attributes->slug, 'near' => $content->number]),
                 'pubdate'     => $this->parseDate($this->lastTopics ? $discussion->attributes->createdAt : $discussion->attributes->lastPostedAt),
                 'author'      => $author,
             ];
