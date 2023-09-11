@@ -40,20 +40,11 @@
 namespace IanM\FlarumFeeds\Controller;
 
 use DateTime;
-use Flarum\Api\Client as ApiClient;
-use Flarum\Http\Exception\RouteNotFoundException;
-use Flarum\Http\UrlGenerator;
 use Flarum\Post\CommentPost;
-use Flarum\Post\Post;
 use Flarum\Post\PostRepository;
-use Flarum\Settings\SettingsRepositoryInterface;
-use Flarum\User\User;
 use Flarum\User\UserRepository;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use stdClass;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Displays feed for a given topic.
