@@ -64,7 +64,10 @@ return [
         ->get('/atom/t/{tag}', 'feeds.atom.tag', Controller\TagsFeedController::class)
 
         ->get('/rss/t/{tag}/discussions', 'feeds.rss.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
-        ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', Controller\LastDiscussionsByTagFeedController::class),
+        ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
+
+        ->get('/rss/u/{username}/posts', 'feeds.rss.user_posts', Controller\UserPostsFeedController::class)
+        ->get('/atom/u/{username}/posts', 'feeds.atom.user_posts', Controller\UserPostsFeedController::class),
 
     (new Extend\Frontend('forum'))
         ->content(Listener\AddClientLinks::class),

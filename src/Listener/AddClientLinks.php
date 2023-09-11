@@ -42,6 +42,7 @@ namespace IanM\FlarumFeeds\Listener;
 use Flarum\Foundation\Config;
 use Flarum\Frontend\Document;
 use Flarum\Tags\Tag;
+use Illuminate\Support\Arr;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -84,6 +85,10 @@ class AddClientLinks
 
             // TODO add discussion name?
             $this->addAtomFeed($view, 'atom/d/'.$path_parts[2], $this->translator->trans('ianm-syndication.forum.autodiscovery.discussion_last_posts'));
+        } elseif ($route === 'user') {
+            $username = Arr::get($request->getQueryParams(), 'username');
+
+            $this->addAtomFeed($view, "atom/u/$username/posts", $this->translator->trans('ianm-syndication.forum.autodiscovery.user_last_posts'));
         }
     }
 
