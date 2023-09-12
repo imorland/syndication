@@ -6,7 +6,11 @@ ianm-syndication:
       tag_activity: "Activity for the {tag} tag"
       tag_new_discussions: "Discussions in the {tag} tag"
       discussion_last_posts: "This discussion"
+      user_last_posts: "Posts & comments by this user"
     feeds:
+      entries:
+        user_posts:
+          title_reply: "Re: {discussion}"
       titles:
         main_title: "{forum_name}"
         main_subtitle: "Last posts in the forum"
@@ -18,6 +22,8 @@ ianm-syndication:
         tag_d_subtitle: "The newest discussions in the {tag} tag"
         discussion_title: "{discussion_name}"
         discussion_subtitle: "Last messages in this discussion"
+        user_title: "{username}"
+        user_subtitle: "Latest posts & comments by this user."
     discussion:
       feed_link: Feed
   admin:
