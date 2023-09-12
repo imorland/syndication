@@ -67,7 +67,7 @@ class UserPostsFeedController extends AbstractFeedController
             ->where('user_id', $user->id)
             ->limit($this->getSetting('entries-count'))
             ->orderBy('created_at', 'desc')
-            ->setModel(new CommentPost)
+            ->setModel(new CommentPost())
             ->get();
 
         $entries = [];
