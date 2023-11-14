@@ -60,12 +60,6 @@ return [
         ->get('/rss/d/{id:\d+(?:-[^/]*)?}', 'feeds.rss.discussion', Controller\DiscussionFeedController::class)
         ->get('/atom/d/{id:\d+(?:-[^/]*)?}', 'feeds.atom.discussion', Controller\DiscussionFeedController::class)
 
-        ->get('/rss/t/{tag}', 'feeds.rss.tag', Controller\TagsFeedController::class)
-        ->get('/atom/t/{tag}', 'feeds.atom.tag', Controller\TagsFeedController::class)
-
-        ->get('/rss/t/{tag}/discussions', 'feeds.rss.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
-        ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
-
         ->get('/rss/u/{username}/posts', 'feeds.rss.user_posts', Controller\UserPostsFeedController::class)
         ->get('/atom/u/{username}/posts', 'feeds.atom.user_posts', Controller\UserPostsFeedController::class),
 
@@ -82,4 +76,16 @@ return [
         ->default('ianm-syndication.plugin.forum-icons', false)
         ->serializeToForum('ianm-syndication.plugin.forum-format', 'ianm-syndication.plugin.forum-format')
         ->serializeToForum('ianm-syndication.plugin.forum-icons', 'ianm-syndication.plugin.forum-icons', 'boolVal'),
+
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('flarum-tags', function () {
+            return [
+                (new Extend\Routes('forum'))
+                    ->get('/rss/t/{tag}', 'feeds.rss.tag', Controller\TagsFeedController::class)
+                    ->get('/atom/t/{tag}', 'feeds.atom.tag', Controller\TagsFeedController::class)
+        
+                    ->get('/rss/t/{tag}/discussions', 'feeds.rss.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
+                    ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
+            ];
+        })
 ];
