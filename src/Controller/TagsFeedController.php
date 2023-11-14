@@ -40,7 +40,6 @@
 namespace IanM\FlarumFeeds\Controller;
 
 use Flarum\Api\Client as ApiClient;
-use Flarum\Extension\ExtensionManager;
 use Flarum\Http\Exception\RouteNotFoundException;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
@@ -62,15 +61,11 @@ class TagsFeedController extends DiscussionsActivityFeedController
      */
     private $tagRepository;
 
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, ExtensionManager $extensions, TagRepository $tagRepository, $lastTopics = false)
+    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, TagRepository $tagRepository, $lastTopics = false)
     {
         parent::__construct($view, $api, $translator, $settings, $url, $lastTopics);
 
         $this->tagRepository = $tagRepository;
-
-        if (!$extensions->isEnabled('flarum-tags')) {
-            throw new RouteNotFoundException('Tag feeds not available without the tag extension.');
-        }
     }
 
     protected function getTags(Request $request)

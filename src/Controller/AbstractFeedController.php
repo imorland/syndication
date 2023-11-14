@@ -46,8 +46,8 @@ use Flarum\Http\RequestUtil;
 use Flarum\Http\UrlGenerator;
 use Flarum\Settings\SettingsRepositoryInterface;
 use Flarum\User\User;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Support\Str;
-use Illuminate\View\Factory;
 use Laminas\Diactoros\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -213,7 +213,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      * @param \stdClass $document     A document.
      * @param \stdClass $relationship A relationship object in the document.
      *
-     * @return \stdClass The related object from the document.
+     * @return \stdClass|null The related object from the document.
      */
     protected function getRelationship(\stdClass $document, \stdClass $relationship)
     {
@@ -358,7 +358,7 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         }
         if (!$exact) {
             $spacepos = mb_strrpos($truncate, ' ');
-            if (isset($spacepos)) {
+            if ($spacepos) {
                 if ($html) {
                     $bits = mb_substr($truncate, $spacepos);
                     preg_match_all('/<\/([a-z]+)>/', $bits, $droppedTags, PREG_SET_ORDER);
