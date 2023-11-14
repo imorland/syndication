@@ -83,9 +83,9 @@ return [
                 (new Extend\Routes('forum'))
                     ->get('/rss/t/{tag}', 'feeds.rss.tag', Controller\TagsFeedController::class)
                     ->get('/atom/t/{tag}', 'feeds.atom.tag', Controller\TagsFeedController::class)
-        
+
                     ->get('/rss/t/{tag}/discussions', 'feeds.rss.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
-                    ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', Controller\LastDiscussionsByTagFeedController::class)
+                    ->get('/atom/t/{tag}/discussions', 'feeds.atom.tag_discussions', Controller\LastDiscussionsByTagFeedController::class),
             ];
-        })
+        }),
 ];
