@@ -88,20 +88,24 @@ class DiscussionsActivityFeedController extends AbstractFeedController
 
         $sort = Arr::pull($queryParams, 'sort');
         $q = Arr::pull($queryParams, 'q');
+        $tag = null;
         $tags = $this->getTags($request);
 
         if ($tags != null) {
             $tags_search = [];
-            foreach ($tags as $tag) {
-                $tags_search[] = 'tag:'.$tag;
+            $tags_search_form2 = [];
+            foreach ($tags as $tag1) {
+                $tags_search[] = 'tag:'.$tag1;
+                $tags_search_form2[] = $tag1;
             }
 
             $q .= (!empty($q) ? ' ' : '').implode(' ', $tags_search);
+            $tag = implode(' ', $tags_search_form2);
         }
 
         $params = [
             'sort'    => $sort && isset($sortMap[$sort]) ? $sortMap[$sort] : ($this->lastTopics ? $sortMap['newest'] : $sortMap['latest']),
-            'filter'  => compact('q'),
+            'filter'  => compact('q','tag'),
             'page'    => ['offset' => 0, 'limit' => $this->getSetting('entries-count')],
             'include' => $this->lastTopics ? 'firstPost,user' : 'lastPost,lastPostedUser',
         ];
@@ -109,6 +113,7 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         $actor = $this->getActor($request);
         $forum = $this->getForumDocument($request, $actor);
         $last_discussions = $this->getDocument($request, $actor, $params);
+        //print_r($last_discussions);
 
         $entries = [];
         $lastModified = null;
@@ -189,6 +194,18 @@ class DiscussionsActivityFeedController extends AbstractFeedController
      */
     private function getDocument(Request $request, User $actor, array $params)
     {
+        $params_qs = explode(' ', $params['filter']['q']);
+        $q_exist = false;
+        foreach ($params_qs as $q_1) {
+            if ($q_1 && strpos($q_1, 'tag:') === false) {
+                $q_exist = true;
+                break;
+            }
+        }
+        
+        if (!$q_exist) {
+            return $this->getAPIDocument($request, Arr::get(app('flarum.config'), 'url').'/discussions', $actor, $params);
+        }
         return $this->getAPIDocument($request, '/discussions', $actor, $params);
     }
 
