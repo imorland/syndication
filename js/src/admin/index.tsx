@@ -6,7 +6,7 @@ app.initializers.add('ianm-syndication', () => {
     rss: 'rss',
   };
 
-  app.extensionData
+  app.registry
     .for('ianm-syndication')
     .registerSetting({
       label: app.translator.trans('ianm-syndication.admin.settings.full-text.label'),

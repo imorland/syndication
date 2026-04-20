@@ -21,7 +21,7 @@ export default function addFeedIcons() {
 
     let url = app.forum.attribute('baseUrl') + '/' + format;
 
-    const currentTag = 'flarum-tags' in flarum.extensions ? this.currentTag?.() : undefined;
+    const currentTag = 'flarum-tags' in flarum.extensions ? app.currentTag?.() : undefined;
     if (currentTag) {
       url = url + '/t/' + currentTag.slug();
     }
