@@ -48,20 +48,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AddClientLinks
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var Config
-     */
-    private $config;
-
-    public function __construct(Config $config, TranslatorInterface $translator)
+    public function __construct(private Config $config, private TranslatorInterface $translator)
     {
-        $this->config = $config;
-        $this->translator = $translator;
     }
 
     public function __invoke(Document $view, ServerRequestInterface $request)
