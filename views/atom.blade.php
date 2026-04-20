@@ -14,11 +14,9 @@
         <title><![CDATA[{!! $entry['title'] !!}]]></title>
         <link rel="alternate" type="text/html" href="{{ $entry['link'] }}"/>
         <id>{{ $entry['id'] }}</id>
-        <updated>{{ $entry['pubdate']->format(DateTime::ATOM) }}</updated>
-        <content
-        @if ($html)
-            type="html"
-        @endif><![CDATA[{!! $entry['content'] !!}]]></content>
+        <published>{{ $entry['pubdate']->format(DateTime::ATOM) }}</published>
+        <updated>{{ ($entry['updated'] ?? $entry['pubdate'])->format(DateTime::ATOM) }}</updated>
+        <content type="{{ $html ? 'html' : 'text' }}"><![CDATA[{!! $entry['content'] !!}]]></content>
         <author>
             <name><![CDATA[{{ $entry['author'] }}]]></name>
         </author>
