@@ -56,16 +56,9 @@ class TagsFeedController extends DiscussionsActivityFeedController
 {
     protected $routeName = 'tag';
 
-    /**
-     * @var TagRepository
-     */
-    private $tagRepository;
-
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, TagRepository $tagRepository, $lastTopics = false)
+    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, private TagRepository $tagRepository, $lastTopics = false)
     {
         parent::__construct($view, $api, $translator, $settings, $url, $lastTopics);
-
-        $this->tagRepository = $tagRepository;
     }
 
     protected function getTags(Request $request)

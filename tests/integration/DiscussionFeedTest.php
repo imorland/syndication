@@ -40,8 +40,12 @@
 namespace IanM\FlarumFeeds\Tests\integration;
 
 use Carbon\Carbon;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use Flarum\User\User;
+use PHPUnit\Framework\Attributes\Test;
 
 class DiscussionFeedTest extends TestCase
 {
@@ -54,14 +58,14 @@ class DiscussionFeedTest extends TestCase
         $this->extension('ianm-syndication');
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
             ],
-            'discussions' => [
+            Discussion::class => [
                 ['id' => 1, 'title' => 'Discussion with posts', 'slug' => 'discussion-with-posts', 'user_id' => 2, 'first_post_id' => 1, 'last_post_id' => 3, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subDays(1), 'comment_count' => 3, 'is_private' => false],
                 ['id' => 2, 'title' => 'Private discussion', 'slug' => 'private-discussion', 'user_id' => 2, 'first_post_id' => 4, 'last_post_id' => 4, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now(), 'comment_count' => 1, 'is_private' => true],
             ],
-            'posts' => [
+            Post::class => [
                 ['id' => 1, 'discussion_id' => 1, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>apple</p></t>', 'created_at' => Carbon::now()->subDays(1), 'is_private' => false],
                 ['id' => 2, 'discussion_id' => 1, 'number' => 2, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>banana</p></t>', 'created_at' => Carbon::now()->subHours(12), 'is_private' => false],
                 ['id' => 3, 'discussion_id' => 1, 'number' => 3, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>cherry</p></t>', 'created_at' => Carbon::now(), 'is_private' => false],
@@ -70,9 +74,7 @@ class DiscussionFeedTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_posts_from_discussion()
     {
         $response = $this->send($this->request('GET', '/rss/d/1'));
@@ -84,9 +86,7 @@ class DiscussionFeedTest extends TestCase
         $this->assertStringContainsString('cherry', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function orders_posts_by_created_at_descending()
     {
         $response = $this->send($this->request('GET', '/rss/d/1'));
@@ -101,9 +101,7 @@ class DiscussionFeedTest extends TestCase
         $this->assertLessThan($posApple, $posCherry);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_404_for_nonexistent_discussion()
     {
         $response = $this->send($this->request('GET', '/rss/d/9999'));
@@ -111,9 +109,7 @@ class DiscussionFeedTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_cannot_access_private_discussion()
     {
         $response = $this->send($this->request('GET', '/rss/d/2'));
@@ -123,9 +119,7 @@ class DiscussionFeedTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function slug_suffix_in_id_is_accepted()
     {
         $response = $this->send($this->request('GET', '/rss/d/1-discussion-with-posts'));
@@ -133,9 +127,7 @@ class DiscussionFeedTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function atom_variant_responds()
     {
         $response = $this->send($this->request('GET', '/atom/d/1'));

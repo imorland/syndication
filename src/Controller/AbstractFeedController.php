@@ -61,31 +61,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 abstract class AbstractFeedController implements RequestHandlerInterface
 {
     /**
-     * @var ApiClient
-     */
-    protected $api;
-
-    /**
-     * @var Factory
-     */
-    protected $view;
-
-    /**
-     * @var UrlGenerator
-     */
-    protected $url;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * @var SettingsRepositoryInterface
-     */
-    protected $settings;
-
-    /**
      * @var string Must be defined by the subclasses to contain the last bit of the route name
      */
     protected $routeName;
@@ -100,20 +75,8 @@ abstract class AbstractFeedController implements RequestHandlerInterface
         'atom' => 'application/atom+xml',
     ];
 
-    /**
-     * @param Factory                     $view
-     * @param ApiClient                   $api
-     * @param TranslatorInterface         $translator
-     * @param SettingsRepositoryInterface $settings
-     * @param UrlGenerator                $url
-     */
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url)
+    public function __construct(protected Factory $view, protected ApiClient $api, protected TranslatorInterface $translator, protected SettingsRepositoryInterface $settings, protected UrlGenerator $url)
     {
-        $this->view = $view;
-        $this->api = $api;
-        $this->translator = $translator;
-        $this->settings = $settings;
-        $this->url = $url;
     }
 
     /**

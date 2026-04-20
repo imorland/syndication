@@ -40,8 +40,12 @@
 namespace IanM\FlarumFeeds\Tests\integration;
 
 use Carbon\Carbon;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use Flarum\User\User;
+use PHPUnit\Framework\Attributes\Test;
 
 class FeedFormatTest extends TestCase
 {
@@ -56,21 +60,19 @@ class FeedFormatTest extends TestCase
         // Content deliberately contains HTML tags and entities so we can assert
         // how the plain-text and html-passthrough render modes differ.
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
             ],
-            'discussions' => [
+            Discussion::class => [
                 ['id' => 1, 'title' => 'Tom & Jerry: "A Tale"', 'slug' => 'tom-and-jerry', 'user_id' => 2, 'first_post_id' => 1, 'last_post_id' => 1, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subHours(1), 'comment_count' => 1, 'is_private' => false],
             ],
-            'posts' => [
+            Post::class => [
                 ['id' => 1, 'discussion_id' => 1, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>hello <em>world</em> &amp; friends</p></t>', 'created_at' => Carbon::now()->subHours(1), 'is_private' => false],
             ],
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function atom_entry_has_published_and_updated_dates()
     {
         $response = $this->send($this->request('GET', '/atom'));
@@ -85,9 +87,7 @@ class FeedFormatTest extends TestCase
         $this->assertMatchesRegularExpression('#<entry>.*<updated>[^<]+</updated>.*</entry>#s', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function atom_content_declares_type_attribute()
     {
         // Default html setting is off, so content should be plain text.
@@ -100,9 +100,7 @@ class FeedFormatTest extends TestCase
         $this->assertStringNotContainsString('<content type="html">', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function atom_content_declares_html_type_when_html_setting_enabled()
     {
         $this->setting('ianm-syndication.plugin.html', '1');
@@ -114,9 +112,7 @@ class FeedFormatTest extends TestCase
         $this->assertStringNotContainsString('<content type="text">', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function plain_text_mode_decodes_entities()
     {
         // html setting is off by default.
@@ -130,9 +126,7 @@ class FeedFormatTest extends TestCase
         $this->assertStringNotContainsString('&amp; friends', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function html_mode_preserves_markup_and_entities()
     {
         $this->setting('ianm-syndication.plugin.html', '1');
@@ -145,9 +139,7 @@ class FeedFormatTest extends TestCase
         $this->assertStringContainsString('<em>world</em>', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rss_feed_decodes_entities_in_plain_text_mode()
     {
         $response = $this->send($this->request('GET', '/rss'));

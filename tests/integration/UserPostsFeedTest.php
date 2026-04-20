@@ -40,8 +40,12 @@
 namespace IanM\FlarumFeeds\Tests\integration;
 
 use Carbon\Carbon;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use Flarum\User\User;
+use PHPUnit\Framework\Attributes\Test;
 
 class UserPostsFeedTest extends TestCase
 {
@@ -54,16 +58,16 @@ class UserPostsFeedTest extends TestCase
         $this->extension('ianm-syndication');
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
                 ['id' => 3, 'username' => 'other', 'password' => '$2y$10$LO59tiT7uggl6Oe23o/O6.utnF6ipngYjvMvaxo1TciKqBttDNKim', 'email' => 'other@machine.local', 'is_email_confirmed' => 1],
             ],
-            'discussions' => [
+            Discussion::class => [
                 ['id' => 1, 'title' => 'Own thread', 'slug' => 'own-thread', 'user_id' => 2, 'first_post_id' => 1, 'last_post_id' => 1, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subHours(3), 'comment_count' => 1, 'is_private' => false],
                 ['id' => 2, 'title' => 'Other thread', 'slug' => 'other-thread', 'user_id' => 3, 'first_post_id' => 2, 'last_post_id' => 3, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subHours(2), 'comment_count' => 2, 'is_private' => false],
                 ['id' => 3, 'title' => 'Private thread', 'slug' => 'private-thread', 'user_id' => 2, 'first_post_id' => 4, 'last_post_id' => 4, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now(), 'comment_count' => 1, 'is_private' => true],
             ],
-            'posts' => [
+            Post::class => [
                 ['id' => 1, 'discussion_id' => 1, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>start own</p></t>', 'created_at' => Carbon::now()->subHours(3), 'is_private' => false],
                 ['id' => 2, 'discussion_id' => 2, 'number' => 1, 'user_id' => 3, 'type' => 'comment', 'content' => '<t><p>other started this</p></t>', 'created_at' => Carbon::now()->subHours(2), 'is_private' => false],
                 ['id' => 3, 'discussion_id' => 2, 'number' => 2, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>reply in other</p></t>', 'created_at' => Carbon::now()->subHours(1), 'is_private' => false],
@@ -73,9 +77,7 @@ class UserPostsFeedTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_only_comment_posts_by_user()
     {
         $response = $this->send($this->request('GET', '/rss/u/normal/posts'));
@@ -90,9 +92,7 @@ class UserPostsFeedTest extends TestCase
         $this->assertStringNotContainsString('discussionRenamed', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function guest_does_not_see_posts_in_private_discussions()
     {
         $response = $this->send($this->request('GET', '/rss/u/normal/posts'));
@@ -101,9 +101,7 @@ class UserPostsFeedTest extends TestCase
         $this->assertStringNotContainsString('hush this is secret', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returns_404_for_unknown_username()
     {
         $response = $this->send($this->request('GET', '/rss/u/ghost/posts'));
@@ -111,9 +109,7 @@ class UserPostsFeedTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function atom_variant_responds()
     {
         $response = $this->send($this->request('GET', '/atom/u/normal/posts'));

@@ -55,11 +55,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DiscussionsActivityFeedController extends AbstractFeedController
 {
-    /**
-     * @var bool true to display topics ordered by creation date with first post instead of activity
-     */
-    private $lastTopics;
-
     protected $routeName = 'global';
 
     /**
@@ -68,11 +63,9 @@ class DiscussionsActivityFeedController extends AbstractFeedController
      * @param TranslatorInterface $translator
      * @param bool                $lastTopics
      */
-    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, $lastTopics = false)
+    public function __construct(Factory $view, ApiClient $api, TranslatorInterface $translator, SettingsRepositoryInterface $settings, UrlGenerator $url, private $lastTopics = false)
     {
         parent::__construct($view, $api, $translator, $settings, $url);
-
-        $this->lastTopics = $lastTopics;
     }
 
     /**
