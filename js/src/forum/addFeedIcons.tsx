@@ -7,7 +7,6 @@ import DiscussionControls from 'flarum/forum/utils/DiscussionControls';
 import LinkButton from 'flarum/common/components/LinkButton';
 import Discussion from 'flarum/common/models/Discussion';
 import UserPage from 'flarum/forum/components/UserPage';
-import type User from 'flarum/common/models/User';
 
 export default function addFeedIcons() {
   extend(IndexPage.prototype, 'actionItems', function (items: ItemList<Mithril.Children>) {
@@ -22,8 +21,9 @@ export default function addFeedIcons() {
 
     let url = app.forum.attribute('baseUrl') + '/' + format;
 
-    if ('flarum-tags' in flarum.extensions && this.currentTag()) {
-      url = url + '/t/' + this.currentTag().slug();
+    const currentTag = 'flarum-tags' in flarum.extensions ? this.currentTag?.() : undefined;
+    if (currentTag) {
+      url = url + '/t/' + currentTag.slug();
     }
 
     items.add('rss-feed', <LinkButton icon="fas fa-rss" className="Button Button--icon" href={url} target="_blank" />, 105);
@@ -45,7 +45,7 @@ export default function addFeedIcons() {
   });
 
   extend(UserPage.prototype, 'navItems', function (this: UserPage, items) {
-    if (!app.forum.attribute('ianm-syndication.plugin.forum-icons')) {
+    if (!app.forum.attribute('ianm-syndication.plugin.forum-icons') || !this.user) {
       return;
     }
 
