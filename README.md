@@ -55,4 +55,3 @@ Feeds are linked in the page head for autodiscovery.
 - [Source code on GitHub](https://github.com/imorland/syndication)
 - [Report an issue](https://github.com/imorland/syndication/issues)
 - [Packagist](https://packagist.org/packages/ianm/syndication)
-- [Extiverse](https://extiverse.com/extension/ianm/syndication)
