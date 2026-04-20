@@ -121,9 +121,16 @@ class DiscussionsActivityFeedController extends AbstractFeedController
                 $content = $this->getRelationship($last_discussions, $discussion->relationships->firstPost);
             } elseif (isset($discussion->relationships->lastPost)) {
                 $content = $this->getRelationship($last_discussions, $discussion->relationships->lastPost);
-            } else {  // Happens when the first or last post is soft-deleted
+            } else {
+                $content = null;
+            }
+
+            // Fallback when the first/last post is soft-deleted, hidden from the
+            // actor, or otherwise absent from the API document's `included`.
+            if ($content === null) {
                 $content = new \stdClass();
                 $content->contentHtml = '';
+                $content->number = 1;
             }
 
             if ($this->lastTopics) {

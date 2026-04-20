@@ -1,0 +1,123 @@
+<?php
+
+/*
+ * This file is part of ianm/syndication.
+ *
+ * For the full copyright and license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+namespace IanM\FlarumFeeds\Tests\integration;
+
+use Carbon\Carbon;
+use Flarum\Testing\integration\RetrievesAuthorizedUsers;
+use Flarum\Testing\integration\TestCase;
+
+class DiscussionsActivityFeedTest extends TestCase
+{
+    use RetrievesAuthorizedUsers;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->extension('ianm-syndication');
+
+        $this->prepareDatabase([
+            'users' => [
+                $this->normalUser(),
+            ],
+            'discussions' => [
+                ['id' => 1, 'title' => 'Public discussion A', 'slug' => 'public-discussion-a', 'user_id' => 2, 'first_post_id' => 1, 'last_post_id' => 1, 'last_posted_at' => Carbon::now()->subHours(2), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subHours(2), 'comment_count' => 1, 'is_private' => false],
+                ['id' => 2, 'title' => 'Public discussion B', 'slug' => 'public-discussion-b', 'user_id' => 2, 'first_post_id' => 2, 'last_post_id' => 2, 'last_posted_at' => Carbon::now()->subHours(1), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subHours(1), 'comment_count' => 1, 'is_private' => false],
+                ['id' => 3, 'title' => 'Private discussion', 'slug' => 'private-discussion', 'user_id' => 2, 'first_post_id' => 3, 'last_post_id' => 3, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now(), 'comment_count' => 1, 'is_private' => true],
+            ],
+            'posts' => [
+                ['id' => 1, 'discussion_id' => 1, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>body of public A</p></t>', 'created_at' => Carbon::now()->subHours(2), 'is_private' => false],
+                ['id' => 2, 'discussion_id' => 2, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>body of public B</p></t>', 'created_at' => Carbon::now()->subHours(1), 'is_private' => false],
+                ['id' => 3, 'discussion_id' => 3, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>body of private</p></t>', 'created_at' => Carbon::now(), 'is_private' => true],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function guest_sees_public_discussions_only()
+    {
+        $response = $this->send($this->request('GET', '/rss'));
+        $body = (string) $response->getBody();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertStringContainsString('Public discussion A', $body);
+        $this->assertStringContainsString('Public discussion B', $body);
+        $this->assertStringNotContainsString('Private discussion', $body);
+    }
+
+    /**
+     * @test
+     */
+    public function rss_feed_has_valid_shape()
+    {
+        $response = $this->send($this->request('GET', '/rss'));
+        $body = (string) $response->getBody();
+
+        $this->assertStringContainsString('<?xml', $body);
+        $this->assertStringContainsString('<rss', $body);
+        $this->assertStringContainsString('<channel>', $body);
+        $this->assertStringContainsString('<item>', $body);
+    }
+
+    /**
+     * @test
+     */
+    public function atom_feed_has_valid_shape()
+    {
+        $response = $this->send($this->request('GET', '/atom'));
+        $body = (string) $response->getBody();
+
+        $this->assertStringContainsString('<?xml', $body);
+        $this->assertStringContainsString('<feed', $body);
+        $this->assertStringContainsString('<entry>', $body);
+    }
+
+    /**
+     * @test
+     */
+    public function entries_count_setting_limits_items()
+    {
+        $this->setting('ianm-syndication.plugin.entries-count', '1');
+
+        $response = $this->send($this->request('GET', '/rss'));
+        $body = (string) $response->getBody();
+
+        $this->assertEquals(1, substr_count($body, '<item>'));
+    }
+
+    /**
+     * @test
+     */
+    public function last_modified_header_is_set()
+    {
+        $response = $this->send($this->request('GET', '/rss'));
+
+        $this->assertNotEmpty($response->getHeaderLine('Last-Modified'));
+    }
+
+    /**
+     * @test
+     */
+    public function feed_orders_by_last_posted_at_descending()
+    {
+        $response = $this->send($this->request('GET', '/rss'));
+        $body = (string) $response->getBody();
+
+        $posA = strpos($body, 'Public discussion A');
+        $posB = strpos($body, 'Public discussion B');
+
+        $this->assertNotFalse($posA);
+        $this->assertNotFalse($posB);
+        // B was posted more recently than A, so it should appear first.
+        $this->assertLessThan($posA, $posB);
+    }
+}
