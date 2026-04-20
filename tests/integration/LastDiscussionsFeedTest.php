@@ -40,12 +40,12 @@
 namespace IanM\FlarumFeeds\Tests\integration;
 
 use Carbon\Carbon;
-use Flarum\Testing\integration\RetrievesAuthorizedUsers;
-use Flarum\Testing\integration\TestCase;
-use PHPUnit\Framework\Attributes\Test;
-use Flarum\User\User;
 use Flarum\Discussion\Discussion;
 use Flarum\Post\Post;
+use Flarum\Testing\integration\RetrievesAuthorizedUsers;
+use Flarum\Testing\integration\TestCase;
+use Flarum\User\User;
+use PHPUnit\Framework\Attributes\Test;
 
 class LastDiscussionsFeedTest extends TestCase
 {
