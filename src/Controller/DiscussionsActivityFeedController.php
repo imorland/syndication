@@ -90,18 +90,17 @@ class DiscussionsActivityFeedController extends AbstractFeedController
         $q = Arr::pull($queryParams, 'q');
         $tags = $this->getTags($request);
 
+        $filter = [];
+        if (!empty($q)) {
+            $filter['q'] = $q;
+        }
         if ($tags != null) {
-            $tags_search = [];
-            foreach ($tags as $tag) {
-                $tags_search[] = 'tag:'.$tag;
-            }
-
-            $q .= (!empty($q) ? ' ' : '').implode(' ', $tags_search);
+            $filter['tag'] = implode(',', $tags);
         }
 
         $params = [
             'sort'    => $sort && isset($sortMap[$sort]) ? $sortMap[$sort] : ($this->lastTopics ? $sortMap['newest'] : $sortMap['latest']),
-            'filter'  => compact('q'),
+            'filter'  => $filter,
             'page'    => ['offset' => 0, 'limit' => $this->getSetting('entries-count')],
             'include' => $this->lastTopics ? 'firstPost,user' : 'lastPost,lastPostedUser',
         ];
