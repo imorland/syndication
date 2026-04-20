@@ -256,7 +256,16 @@ abstract class AbstractFeedController implements RequestHandlerInterface
      */
     protected function stripHTML($content)
     {
-        return $this->getSetting('html') ? $content : strip_tags($content);
+        if ($this->getSetting('html')) {
+            return $content;
+        }
+
+        // Decode entities so plain-text output does not leak `&amp;`, `&#39;`
+        // etc. into Atom <content type="text"> or RSS <description>.
+        $content = strip_tags($content);
+        $content = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        return trim(preg_replace('/\s+/u', ' ', $content));
     }
 
     /**
