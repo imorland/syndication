@@ -2,15 +2,12 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/ianm/syndication.svg)](https://packagist.org/packages/ianm/syndication)
 [![Total Downloads](https://img.shields.io/packagist/dt/ianm/syndication.svg)](https://packagist.org/packages/ianm/syndication)
 [![Backend CI](https://github.com/imorland/syndication/actions/workflows/backend.yml/badge.svg?branch=1.x)](https://github.com/imorland/syndication/actions/workflows/backend.yml)
-[![Compatibility](https://flarum-badge-api.davwheat.dev/v1/compat-latest/ianm/syndication)](https://flarum-badge-api.davwheat.dev/v1/compat-latest/ianm/syndication)
 
 # Syndication for [Flarum](https://flarum.org)
 
 Brings RSS and Atom feeds to Flarum.
 
 Based on [`amaurycarrade/flarum-ext-syndication`](https://github.com/AmauryCarrade/flarum-ext-syndication), abandoned since 2019. This fork, and the changes required to bring the extension back to life, were sponsored by [010101](https://discuss.flarum.org/u/010101).
-
-Compatible with Flarum v1.0 and above.
 
 ### Installation
 
