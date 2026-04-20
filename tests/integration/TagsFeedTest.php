@@ -42,6 +42,11 @@ namespace IanM\FlarumFeeds\Tests\integration;
 use Carbon\Carbon;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
 use Flarum\Testing\integration\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use Flarum\User\User;
+use Flarum\Tags\Tag;
+use Flarum\Discussion\Discussion;
+use Flarum\Post\Post;
 
 class TagsFeedTest extends TestCase
 {
@@ -54,19 +59,19 @@ class TagsFeedTest extends TestCase
         $this->extension('flarum-tags', 'ianm-syndication');
 
         $this->prepareDatabase([
-            'users' => [
+            User::class => [
                 $this->normalUser(),
             ],
-            'tags' => [
+            Tag::class => [
                 ['id' => 1, 'name' => 'General', 'slug' => 'general', 'description' => null, 'color' => '#000', 'position' => 0, 'parent_id' => null, 'is_restricted' => false, 'is_hidden' => false],
                 ['id' => 2, 'name' => 'News', 'slug' => 'news', 'description' => null, 'color' => '#000', 'position' => 1, 'parent_id' => null, 'is_restricted' => false, 'is_hidden' => false],
             ],
-            'discussions' => [
+            Discussion::class => [
                 ['id' => 1, 'title' => 'General discussion', 'slug' => 'general-discussion', 'user_id' => 2, 'first_post_id' => 1, 'last_post_id' => 1, 'last_posted_at' => Carbon::now()->subHours(2), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subHours(2), 'comment_count' => 1, 'is_private' => false],
                 ['id' => 2, 'title' => 'News announcement', 'slug' => 'news-announcement', 'user_id' => 2, 'first_post_id' => 2, 'last_post_id' => 2, 'last_posted_at' => Carbon::now()->subHours(1), 'last_posted_user_id' => 2, 'created_at' => Carbon::now()->subHours(1), 'comment_count' => 1, 'is_private' => false],
                 ['id' => 3, 'title' => 'Untagged thread', 'slug' => 'untagged-thread', 'user_id' => 2, 'first_post_id' => 3, 'last_post_id' => 3, 'last_posted_at' => Carbon::now(), 'last_posted_user_id' => 2, 'created_at' => Carbon::now(), 'comment_count' => 1, 'is_private' => false],
             ],
-            'posts' => [
+            Post::class => [
                 ['id' => 1, 'discussion_id' => 1, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>general body</p></t>', 'created_at' => Carbon::now()->subHours(2), 'is_private' => false],
                 ['id' => 2, 'discussion_id' => 2, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>news body</p></t>', 'created_at' => Carbon::now()->subHours(1), 'is_private' => false],
                 ['id' => 3, 'discussion_id' => 3, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>untagged body</p></t>', 'created_at' => Carbon::now(), 'is_private' => false],
@@ -78,9 +83,7 @@ class TagsFeedTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function tag_activity_feed_returns_only_tagged_discussions()
     {
         $response = $this->send($this->request('GET', '/rss/t/general'));
@@ -92,9 +95,7 @@ class TagsFeedTest extends TestCase
         $this->assertStringNotContainsString('Untagged thread', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function tag_discussions_feed_returns_only_tagged_discussions()
     {
         $response = $this->send($this->request('GET', '/rss/t/news/discussions'));
@@ -106,9 +107,7 @@ class TagsFeedTest extends TestCase
         $this->assertStringNotContainsString('Untagged thread', $body);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function unknown_tag_returns_404()
     {
         $response = $this->send($this->request('GET', '/rss/t/nope'));
@@ -116,9 +115,7 @@ class TagsFeedTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function atom_variant_responds()
     {
         $response = $this->send($this->request('GET', '/atom/t/general'));
@@ -130,7 +127,6 @@ class TagsFeedTest extends TestCase
     }
 
     /**
-     * @test
      *
      * Regression guard for the blomstra/search compatibility fix (PR #20).
      *
@@ -142,6 +138,7 @@ class TagsFeedTest extends TestCase
      * override and rerouted to its Elasticsearch endpoint, which does not
      * parse `tag:` gambits and returned empty feeds.
      */
+    #[Test]
     public function tag_filter_is_sent_via_filter_tag_not_filter_q()
     {
         $captured = null;

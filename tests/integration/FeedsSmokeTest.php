@@ -40,6 +40,7 @@
 namespace IanM\FlarumFeeds\Tests\integration;
 
 use Flarum\Testing\integration\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class FeedsSmokeTest extends TestCase
 {
@@ -50,9 +51,7 @@ class FeedsSmokeTest extends TestCase
         $this->extension('ianm-syndication');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function rss_feed_responds_200_for_guest()
     {
         $response = $this->send($this->request('GET', '/rss'));
@@ -61,9 +60,7 @@ class FeedsSmokeTest extends TestCase
         $this->assertStringContainsString('application/rss+xml', $response->getHeaderLine('Content-Type'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function atom_feed_responds_200_for_guest()
     {
         $response = $this->send($this->request('GET', '/atom'));
