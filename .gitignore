@@ -2,4 +2,5 @@ vendor
 composer.lock
 node_modules
 tests/integration/tmp
+tests/.phpunit.result.cache
 
