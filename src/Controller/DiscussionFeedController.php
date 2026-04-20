@@ -138,7 +138,10 @@ class DiscussionFeedController extends AbstractFeedController
      */
     protected function getDiscussionsDocument(Request $request, User $actor, array $params)
     {
-        return $this->getAPIDocument($request, '/discussions/'.$params['id'], $actor, $params);
+        $id = $params['id'];
+        unset($params['id']);
+
+        return $this->getAPIDocument($request, '/discussions/'.$id, $actor, $params);
     }
 
     /**

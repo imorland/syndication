@@ -52,7 +52,7 @@ class AddClientLinks
     {
     }
 
-    public function __invoke(Document $view, ServerRequestInterface $request)
+    public function __invoke(Document $view, ServerRequestInterface $request): void
     {
         $this->addAtomFeed($view, 'atom', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_activity'));
         $this->addAtomFeed($view, 'atom/discussions', $this->translator->trans('ianm-syndication.forum.autodiscovery.forum_new_discussions'));
@@ -80,7 +80,7 @@ class AddClientLinks
         }
     }
 
-    private function addAtomFeed(Document $view, $url, $title): void
+    private function addAtomFeed(Document $view, string $url, string $title): void
     {
         $view->head[] = '<link rel="alternate" type="application/atom+xml" title="'.$title.'" href="'.$this->config->url().'/'.$url.'" />';
     }

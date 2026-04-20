@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "flarum/core": "^2.0.0-beta"
+        "flarum/core": "^2.0.0"
     },
     "extra": {
         "flarum-extension": {
@@ -61,9 +61,9 @@
         }
     },
     "require-dev": {
-        "flarum/phpstan": "^2.0.0-beta",
-        "flarum/tags": "*",
-        "flarum/testing": "^2.0.0-beta"
+        "flarum/phpstan": "^2.0.0",
+        "flarum/tags": "^2.0.0",
+        "flarum/testing": "^2.0.0"
     },
     "scripts": {
         "analyse:phpstan": "phpstan analyse",
@@ -82,5 +82,7 @@
         "test:unit": "Runs all unit tests.",
         "test:integration": "Runs all integration tests.",
         "test:setup": "Sets up a database for use with integration tests. Execute this only once."
-    }
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
 }
